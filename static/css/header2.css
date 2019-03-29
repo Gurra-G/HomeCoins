@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 .bd-placeholder-img {
     font-size: 1.125rem;
     text-anchor: middle;
@@ -57,64 +56,4 @@
         -ms-user-select: none;
         user-select: none;
       }
-=======
-.bd-placeholder-img {
-    font-size: 1.125rem;
-    text-anchor: middle;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-  }
-
-/* Extra small devices (phones, 600px and down) */
-@media only screen and (max-width: 600px) {
-    .d-md-block {
-        display: block!important;
-      }
-
-    .bd-placeholder-img-lg {
-        font-size: 3.5rem;
-      }
-    
-} 
-
-/* Small devices (portrait tablets and large phones, 600px and up) */
-@media only screen and (min-width: 600px) {
-    .bd-placeholder-img-lg {
-        font-size: 3.5rem;
-      }
-} 
-
-/* Medium devices (landscape tablets, 768px and up) */
-@media only screen and (min-width: 768px) {
-    .bd-placeholder-img-lg {
-        font-size: 3.5rem;
-      }
-} 
-
-/* Large devices (laptops/desktops, 992px and up) */
-@media only screen and (min-width: 992px) {
-    .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-      }
-    
-} 
-
-/* Extra large devices (large laptops and desktops, 1200px and up) */
-@media only screen and (min-width: 1200px) {
-    .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-      }
->>>>>>> 5a09a212bb6bc058dfc2cb7dd84495983dff50a8
 }
