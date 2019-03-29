@@ -86,7 +86,7 @@ def get_all_users():
     connection.close()
     return users
 
-
+#check if login is requiered to reach deeper templates after login.
 @route("/user-login", method="POST")
 def login_check():
     """Function that retrieves the data from the login form and checks the credentials"""
@@ -143,6 +143,18 @@ def capture_registration():
                 int(getattr(request.forms, "inputRole4"))]
     user_reg(userInfo)
     return template("successful-registration")
+
+
+@error(404)
+def error404(error):
+    """Returns the error template"""
+    return template("error")
+
+
+@error(405)
+def error405(error):
+    """Returns the error template"""
+    return template("error")
 
 
 @route("/static/css/<filename:path>")
