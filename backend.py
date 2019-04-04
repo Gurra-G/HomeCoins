@@ -73,18 +73,18 @@ def login_error():
     return flash
 
 
-def get_all_users():
+def get_all_users(name):
     """Function that retrieves all users from the database"""
     connection = psycopg2.connect(user="ai7216",
                                   host="pgserver.mah.se",
                                   password="yua98z70",
                                   database="ai7216")
     cursor = connection.cursor()
-    sql = """SELECT user_id, user_role, user_name, user_password FROM USERS;"""
-    cursor.execute(sql)
-    users = cursor.fetchall()
+    sql = """SELECT user_id, user_role, user_name, user_password FROM USERS where user_name = %s;"""
+    cursor.execute(sql, (name,))
+    user = cursor.fetchall()
     connection.close()
-    return users
+    return user
 
 #check if login is requiered to reach deeper templates after login.
 @route("/user-login", method="POST")
@@ -92,7 +92,7 @@ def login_check():
     """Function that retrieves the data from the login form and checks the credentials"""
     loginInfo = [getattr(request.forms, "InputUsername1"), 
                  getattr(request.forms, "InputPassword1")]
-    all_users = get_all_users()
+    all_users = get_all_users(loginInfo[0])
     errorFlash = login_error()
     for i in range(len(all_users)):
         id, role, name, passw = all_users[i]
