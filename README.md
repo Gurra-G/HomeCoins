@@ -10,3 +10,6 @@ these can be installed using pip
 
 
 !
+
+#written by Niklas
+Added a new logo
