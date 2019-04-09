@@ -124,9 +124,10 @@ def user_reg(userInfo):
                                   password="yua98z70",
                                   database="ai7216")
     cursor = connection.cursor()
+    role = 1
     sql = """INSERT into USERS(user_role, user_name, user_email, user_firstname, user_lastname, 
-                 user_social_secnum, user_password) values(%s, %s, %s, %s, %s, %s, %s);"""
-    cursor.execute(sql, (userInfo[6], userInfo[0], userInfo[1], userInfo[2], userInfo[3], userInfo[4], userInfo[5]))
+                 user_social_secnum, user_password user_adress) values(%s, %s, %s, %s, %s, %s, %s);"""
+    cursor.execute(sql, (role, userInfo[0], userInfo[1], userInfo[2], userInfo[3], userInfo[4], userInfo[5], userInfo[6]))
     connection.commit()
     connection.close()
 
@@ -140,7 +141,7 @@ def capture_registration():
                 getattr(request.forms, "inputLastname4"),
                 getattr(request.forms, "inputPersonnummer4"),
                 pbkdf2_sha256.hash(getattr(request.forms, "inputPassword4")),
-                int(getattr(request.forms, "inputRole4"))]
+                getattr(request.forms, "inputAdress4")]
     user_reg(userInfo)
     return template("successful-registration")
 

@@ -17,7 +17,8 @@ create table USERS
     user_firstname      varchar(100) not null,
     user_lastname       varchar(100) not null,
     user_social_secnum  varchar(100) not null,
-    user_password       varchar(100) not null
+    user_password       varchar(100) not null,
+    user_adress         varchar(100) not null
     
 );
 
