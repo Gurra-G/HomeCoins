@@ -126,8 +126,22 @@ def user_reg(userInfo):
     cursor = connection.cursor()
     role = 1
     sql = """INSERT into USERS(user_role, user_name, user_email, user_firstname, user_lastname, 
-                 user_social_secnum, user_password user_adress) values(%s, %s, %s, %s, %s, %s, %s);"""
+                 user_social_secnum, user_password, user_adress) values(%s, %s, %s, %s, %s, %s, %s, %s);"""
     cursor.execute(sql, (role, userInfo[0], userInfo[1], userInfo[2], userInfo[3], userInfo[4], userInfo[5], userInfo[6]))
+    connection.commit()
+    connection.close()
+
+#Niklas & Victor
+def issue_reg(issueInfo):
+    """Function that adds the issue to the database"""
+    connection = psycopg2.connect(user="ai7216",
+                                  host="pgserver.mah.se",
+                                  password="yua98z70",
+                                  database="ai7216")
+    cursor = connection.cursor()
+    sql = """INSERT into CHORE(chore_name, chore_cattegory, chore_value, due_date) values(%s, %s, %s, %s);"""
+    cursor.execute(sql, (issueInfo[0], issueInfo[1], issueInfo[2], issueInfo[3]))
+    print(issueInfo[3])
     connection.commit()
     connection.close()
 
@@ -144,6 +158,25 @@ def capture_registration():
                 getattr(request.forms, "inputAdress4")]
     user_reg(userInfo)
     return template("successful-registration")
+
+#Niklas & Victor
+@route("/create-issue", method="POST")
+def capture_issue():
+    """Function that retrieves the data from the create-issue form"""
+    issueInfo = [getattr(request.forms, "InputNameIssue"), 
+                getattr(request.forms, "IssueCategory"),
+                getattr(request.forms, "PointsForIssue"),
+                getattr(request.forms, "ChooseDate")]
+    issue_reg(issueInfo)
+    return template("admin-page", issues=get_issue())
+
+
+
+#Niklas & Victor
+@route("/create-issue")
+def create_issue():
+    """Displays the create issue page"""
+    return template("create-issue")
 
 
 @error(404)
