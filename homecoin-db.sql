@@ -20,7 +20,8 @@ create table USERS
     user_lastname       varchar(100) not null,
     user_social_secnum  varchar(100) not null,
     user_password       varchar(100) not null,
-    user_adress         varchar(100) not null
+    user_adress         varchar(100) not null,
+    user_home_name      varchar(100) not null
     
 );
 
@@ -44,7 +45,7 @@ create table HOME
 (
     home_id                 SERIAL primary key,
     home_name               varchar(100) not null,
-    home_address            varchar(100) not null
+    home_adress            varchar(100) not null
 );
 
 create table CHORE

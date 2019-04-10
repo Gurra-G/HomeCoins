@@ -19,12 +19,14 @@ bottle.TEMPLATE_PATH.insert(0, 'views')
     cursor = connection.cursor()"""
 
 
+
 @route("/")
 def index():
     """Displays the landing page"""
     return template("index")
 
 
+# Written by: Anton
 def login_error():
     """Function for flashing the error for login route"""
     flash = """
@@ -73,20 +75,23 @@ def login_error():
     return flash
 
 
+# Written by: Anton
 def get_all_users(name):
-    """Function that retrieves all users from the database"""
+    """Function that retrieves specific user from the database"""
     connection = psycopg2.connect(user="ai7216",
                                   host="pgserver.mah.se",
                                   password="yua98z70",
                                   database="ai7216")
     cursor = connection.cursor()
-    sql = """SELECT user_id, user_role, user_name, user_password FROM USERS where user_name = %s;"""
+    sql = """SELECT user_id, user_role, user_name, user_password, user_adress, user_home_name FROM USERS where user_name = %s;"""
     cursor.execute(sql, (name,))
     user = cursor.fetchall()
     connection.close()
     return user
 
-#check if login is requiered to reach deeper templates after login.
+
+# Written by: Anton
+# check if login is requiered to reach deeper templates.
 @route("/user-login", method="POST")
 def login_check():
     """Function that retrieves the data from the login form and checks the credentials"""
@@ -95,10 +100,10 @@ def login_check():
     all_users = get_all_users(loginInfo[0])
     errorFlash = login_error()
     for i in range(len(all_users)):
-        id, role, name, passw = all_users[i]
+        id, role, name, passw, adr, homeName = all_users[i]
         if loginInfo[0] == name and pbkdf2_sha256.verify(loginInfo[1], passw) is True:
             if role == 1:
-                return template("admin-page")
+                return template("admin-page", adress=adr, home=homeName)
             elif role == 2:
                 return template("user-page")
     else:
@@ -117,6 +122,13 @@ def register():
     return template("register-page")
 
 
+@route("/add-subuser/<adress>/<adrname>")
+def register_sub_user(adress, adrname):
+    """Displayes the register page"""
+    return template("register-subuser-page", adr=adress, adrn=adrname)
+
+
+# Written by: Anton
 def user_reg(userInfo):
     """Function that adds the user to the database"""
     connection = psycopg2.connect(user="ai7216",
@@ -124,14 +136,14 @@ def user_reg(userInfo):
                                   password="yua98z70",
                                   database="ai7216")
     cursor = connection.cursor()
-    role = 1
     sql = """INSERT into USERS(user_role, user_name, user_email, user_firstname, user_lastname, 
-                 user_social_secnum, user_password, user_adress) values(%s, %s, %s, %s, %s, %s, %s, %s);"""
-    cursor.execute(sql, (role, userInfo[0], userInfo[1], userInfo[2], userInfo[3], userInfo[4], userInfo[5], userInfo[6]))
+                 user_social_secnum, user_password, user_adress, user_home_name) values(%s, %s, %s, %s, %s, %s, %s, %s, %s);"""
+    cursor.execute(sql, (userInfo[8], userInfo[0], userInfo[1], userInfo[2], userInfo[3], userInfo[4], userInfo[5], userInfo[6], userInfo[7]))
     connection.commit()
     connection.close()
 
-#Niklas & Victor
+
+# Written by: Niklas & Victor
 def issue_reg(issueInfo):
     """Function that adds the issue to the database"""
     connection = psycopg2.connect(user="ai7216",
@@ -141,11 +153,27 @@ def issue_reg(issueInfo):
     cursor = connection.cursor()
     sql = """INSERT into CHORE(chore_name, chore_cattegory, chore_value, due_date) values(%s, %s, %s, %s);"""
     cursor.execute(sql, (issueInfo[0], issueInfo[1], issueInfo[2], issueInfo[3]))
-    print(issueInfo[3])
     connection.commit()
     connection.close()
 
 
+# Not done
+'''
+def home_reg(adress, homeName):
+    """Function that adds the issue to the database"""
+    connection = psycopg2.connect(user="ai7216",
+                                  host="pgserver.mah.se",
+                                  password="yua98z70",
+                                  database="ai7216")
+    cursor = connection.cursor()
+    sql = """INSERT into HOME(home_name, home_adress) values(%s, %s);"""
+    cursor.execute(sql, (homeName, adress))
+    connection.commit()
+    connection.close()
+'''
+
+
+# Written by: Anton
 @route("/user-registration", method="POST")
 def capture_registration():
     """Function that retrieves the data from the registration form"""
@@ -155,11 +183,15 @@ def capture_registration():
                 getattr(request.forms, "inputLastname4"),
                 getattr(request.forms, "inputPersonnummer4"),
                 pbkdf2_sha256.hash(getattr(request.forms, "inputPassword4")),
-                getattr(request.forms, "inputAdress4")]
+                getattr(request.forms, "inputAdress4"),
+                getattr(request.forms, "inputHomeName4"),
+                int(getattr(request.forms, "userRole"))]
     user_reg(userInfo)
+    #not done home_reg(userInfo[6], userInfo[7])
     return template("successful-registration")
 
-#Niklas & Victor
+
+# Written by: Niklas & Victor
 @route("/create-issue", method="POST")
 def capture_issue():
     """Function that retrieves the data from the create-issue form"""
@@ -168,15 +200,15 @@ def capture_issue():
                 getattr(request.forms, "PointsForIssue"),
                 getattr(request.forms, "ChooseDate")]
     issue_reg(issueInfo)
-    return template("admin-page", issues=get_issue())
+    return template("admin-page")
 
 
-
-#Niklas & Victor
+# Written by: Niklas & Victor
 @route("/create-issue")
 def create_issue():
     """Displays the create issue page"""
     return template("create-issue")
+
 
 
 @error(404)
