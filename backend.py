@@ -157,8 +157,7 @@ def issue_reg(issueInfo):
     connection.close()
 
 
-# Not done
-'''
+# Written by: Anton
 def home_reg(adress, homeName):
     """Function that adds the issue to the database"""
     connection = psycopg2.connect(user="ai7216",
@@ -170,7 +169,6 @@ def home_reg(adress, homeName):
     cursor.execute(sql, (homeName, adress))
     connection.commit()
     connection.close()
-'''
 
 
 # Written by: Anton
@@ -187,7 +185,8 @@ def capture_registration():
                 getattr(request.forms, "inputHomeName4"),
                 int(getattr(request.forms, "userRole"))]
     user_reg(userInfo)
-    #not done home_reg(userInfo[6], userInfo[7])
+    if userInfo[8] == 1:
+      home_reg(userInfo[6], userInfo[7])
     return template("successful-registration")
 
 

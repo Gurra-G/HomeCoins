@@ -1,12 +1,12 @@
 #rotatecoin {
-  -webkit-animation: rotateY 2s infinite linear;
-  animation: rotateY 2s infinite linear;
+  -webkit-animation: spinY 2s infinite linear;
+  animation: spinY 2s infinite linear;
 }
-@-webkit-keyframes rotateY {
-  to { -webkit-transform: rotateY(360deg); }
+@-webkit-keyframes spinY {
+  to { -webkit-transform: spinY(360deg); }
 }
-@keyframes rotateY {
-  to { transform: rotateY(360deg); }
+@keyframes spinY {
+  to { transform: spinY(360deg); }
 }
 
 
