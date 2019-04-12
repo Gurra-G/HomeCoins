@@ -1,0 +1,13 @@
+% include("_header2_.html")
+<div>
+    <h1>Syssla</h1>
+    <div>
+    <ul>
+        % for issue in issues:
+            <li><a href="/issue/{{issue[0]}}">{{issue[1]}}</a></li>
+        % end
+   
+    </ul>
+</div>  
+
+% include("_footer2_.html")

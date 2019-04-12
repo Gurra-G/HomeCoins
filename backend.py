@@ -142,6 +142,11 @@ def user_reg(userInfo):
     connection.commit()
     connection.close()
 
+#Written by: Victor
+@route("/showAllIssues")
+def showIssues():
+  return template("show-issues", issues= get_issue())
+
 
 # Written by: Niklas & Victor
 def issue_reg(issueInfo):
@@ -151,8 +156,8 @@ def issue_reg(issueInfo):
                                   password="yua98z70",
                                   database="ai7216")
     cursor = connection.cursor()
-    sql = """INSERT into CHORE(chore_name, chore_cattegory, chore_value, due_date) values(%s, %s, %s, %s);"""
-    cursor.execute(sql, (issueInfo[0], issueInfo[1], issueInfo[2], issueInfo[3]))
+    sql = """INSERT into CHORE(chore_name, chore_cattegory, chore_value, chore_description, due_date) values(%s, %s, %s, %s, %s);"""
+    cursor.execute(sql, (issueInfo[0], issueInfo[1], issueInfo[2], issueInfo[3], issueInfo[4]))
     connection.commit()
     connection.close()
 
@@ -191,15 +196,16 @@ def capture_registration():
 
 
 # Written by: Niklas & Victor
-@route("/create-issue", method="POST")
+@route("/info-issue", method="POST")
 def capture_issue():
     """Function that retrieves the data from the create-issue form"""
     issueInfo = [getattr(request.forms, "InputNameIssue"), 
                 getattr(request.forms, "IssueCategory"),
                 getattr(request.forms, "PointsForIssue"),
+                getattr(request.forms, "CommentIssue"),
                 getattr(request.forms, "ChooseDate")]
     issue_reg(issueInfo)
-    return template("admin-page")
+    return template("show-issues", issues=get_issue())
 
 
 # Written by: Niklas & Victor
@@ -208,7 +214,40 @@ def create_issue():
     """Displays the create issue page"""
     return template("create-issue")
 
+# Written by: Victor
+def get_issue():
+    '''Function that returns all info about the CHORES/Issues'''
+    conn = psycopg2.connect(user="ai7216", host="pgserver.mah.se", password="yua98z70", database="ai7216")
 
+    #Open a cursor to perform database operations
+    cur = conn.cursor()
+
+    # Query the database and obtain data as Python objects
+    cur.execute("SELECT * FROM CHORE;")
+
+    get_issue_description = cur.fetchall()
+
+    return (get_issue_description)
+
+# Written by: Victor
+def find_issue(issue_id):
+    "hämtar alla artiklar, om artikel = id då har man hittat rätt artikel"
+    issues = get_issue()
+    found_issue = None
+    for issue in issues:
+        if issue[0] == int(issue_id):
+            found_issue = issue
+    return found_issue
+
+# Written by: Victor
+@route("/issue/<issue_id>")
+def article(issue_id):
+    '''En funktion som testar om issuen finns eller ej. Funktionen skickar användaren till olika html sidor beroende på utfall'''
+    found_issue = find_issue(issue_id)
+    if found_issue == None:
+        return template("admin-page")
+    else:
+        return template("edit-issue", { "Info": found_issue })
 
 @error(404)
 def error404(error):
