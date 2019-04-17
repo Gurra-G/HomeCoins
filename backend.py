@@ -230,24 +230,44 @@ def get_issue():
     return (get_issue_description)
 
 # Written by: Victor
+def get_specific_issue(issue_id):
+    '''Function that returns all info about the CHORES/Issues'''
+    conn = psycopg2.connect(user="ai7216", host="pgserver.mah.se", password="yua98z70", database="ai7216")
+
+    #Open a cursor to perform database operations
+    cur = conn.cursor()
+
+    # Query the database and obtain data as Python objects
+    sql = "SELECT * FROM CHORE where chore_id = %s;"
+    cur.execute(sql, (issue_id,))
+
+
+    get_issue_description = cur.fetchall()
+
+    return (get_issue_description)
+'''
+# Written by: Victor
 def find_issue(issue_id):
     "hämtar alla artiklar, om artikel = id då har man hittat rätt artikel"
     issues = get_issue()
     found_issue = None
-    for issue in issues:
-        if issue[0] == int(issue_id):
-            found_issue = issue
+    for i in range(len(issues)):
+      id, name, category, value, description, date = issues[i]
+      if id == issue_id:
+        found_issue = id
     return found_issue
-
+'''
 # Written by: Victor
 @route("/issue/<issue_id>")
-def article(issue_id):
+def issue(issue_id):
     '''En funktion som testar om issuen finns eller ej. Funktionen skickar användaren till olika html sidor beroende på utfall'''
-    found_issue = find_issue(issue_id)
-    if found_issue == None:
-        return template("admin-page")
-    else:
-        return template("edit-issue", { "Info": found_issue })
+    found_issue = get_specific_issue(issue_id)
+    print(found_issue)
+    for Info in found_issue:
+      if Info == None:
+          return template("admin-page")
+      else:
+          return template("edit-issue", { "Info": Info })
 
 @error(404)
 def error404(error):
