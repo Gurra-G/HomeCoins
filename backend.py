@@ -76,7 +76,7 @@ def login_error():
 
 
 # Written by: Anton
-def get_all_users(name):
+def get_the_user(name):
     """Function that retrieves specific user from the database"""
     connection = psycopg2.connect(user="ai7216",
                                   host="pgserver.mah.se",
@@ -97,15 +97,15 @@ def login_check():
     """Function that retrieves the data from the login form and checks the credentials"""
     loginInfo = [getattr(request.forms, "InputUsername1"), 
                  getattr(request.forms, "InputPassword1")]
-    all_users = get_all_users(loginInfo[0])
+    specific_user = get_the_user(loginInfo[0])
     errorFlash = login_error()
-    for i in range(len(all_users)):
-        id, role, name, passw, adr, homeName = all_users[i]
+    for i in range(len(specific_user)):
+        id, role, name, passw, adr, homeName = specific_user[i]
         if loginInfo[0] == name and pbkdf2_sha256.verify(loginInfo[1], passw) is True:
             if role == 1:
-                return template("admin-page", adress=adr, home=homeName)
+                return template("admin-page", id=id)
             elif role == 2:
-                return template("user-page")
+                return template("user-page", id=id)
     else:
         return template("login-page"), errorFlash
 
@@ -122,10 +122,20 @@ def register():
     return template("register-page")
 
 
-@route("/add-subuser/<adress>/<adrname>")
-def register_sub_user(adress, adrname):
+def get_address(adminId):
+    """Function that gets the adress and home name of the admin logged in"""
+    conn = psycopg2.connect(user="ai7216", host="pgserver.mah.se", password="yua98z70", database="ai7216")
+    cur = conn.cursor()
+    sql = "SELECT user_home_name, user_adress from users where user_id = %s;"
+    cur.execute(sql, (adminId,))
+    get_admin_adress = cur.fetchone()
+    return get_admin_adress
+
+
+@route("/add-subuser/<userId>")
+def register_sub_user(userId):
     """Displayes the register page"""
-    return template("register-subuser-page", adr=adress, adrn=adrname)
+    return template("register-subuser-page", address=get_address(userId))
 
 
 # Written by: Anton
@@ -141,6 +151,29 @@ def user_reg(userInfo):
     cursor.execute(sql, (userInfo[8], userInfo[0], userInfo[1], userInfo[2], userInfo[3], userInfo[4], userInfo[5], userInfo[6], userInfo[7]))
     connection.commit()
     connection.close()
+
+
+#written by: Anton
+@route("/show-users/<userId>")
+def showUsers(userId):
+    conn = psycopg2.connect(user="ai7216", host="pgserver.mah.se", password="yua98z70", database="ai7216")
+    cur = conn.cursor()
+    sql = "SELECT user_adress from users where user_id = %s;"
+    cur.execute(sql, (userId,))
+    get_admin_adress = cur.fetchone()
+    return template("show-users", users=get_user(get_admin_adress))
+
+
+# Written by: Anton
+def get_user(adminAdress):
+    """Function that returns all users of a specific household"""
+    conn = psycopg2.connect(user="ai7216", host="pgserver.mah.se", password="yua98z70", database="ai7216")
+    cur = conn.cursor()
+    sql = "SELECT user_name, user_email, user_firstname, user_lastname from users where user_adress = %s and user_role = 2;"
+    cur.execute(sql, adminAdress)
+    get_subusers = cur.fetchall()
+    return get_subusers
+
 
 #Written by: Victor
 @route("/showAllIssues")
@@ -192,9 +225,12 @@ def capture_registration():
     user_reg(userInfo)
     if userInfo[8] == 1:
       home_reg(userInfo[6], userInfo[7])
-    return template("successful-registration")
+      return template("successful-registration")
+    else: 
+      return template("admin-page")
 
 
+#ISSUES NEEDS TO BE COLLECTED AND ADDED FOR A SPECIFIC HOUSEHOLD //TODO!
 # Written by: Niklas & Victor
 @route("/info-issue", method="POST")
 def capture_issue():
@@ -218,33 +254,21 @@ def create_issue():
 def get_issue():
     '''Function that returns all info about the CHORES/Issues'''
     conn = psycopg2.connect(user="ai7216", host="pgserver.mah.se", password="yua98z70", database="ai7216")
-
-    #Open a cursor to perform database operations
     cur = conn.cursor()
-
-    # Query the database and obtain data as Python objects
     cur.execute("SELECT * FROM CHORE;")
-
     get_issue_description = cur.fetchall()
-
     return (get_issue_description)
 
 # Written by: Victor
 def get_specific_issue(issue_id):
     '''Function that returns all info about the CHORES/Issues'''
     conn = psycopg2.connect(user="ai7216", host="pgserver.mah.se", password="yua98z70", database="ai7216")
-
-    #Open a cursor to perform database operations
     cur = conn.cursor()
-
-    # Query the database and obtain data as Python objects
     sql = "SELECT * FROM CHORE where chore_id = %s;"
     cur.execute(sql, (issue_id,))
-
-
     get_issue_description = cur.fetchall()
-
     return (get_issue_description)
+
 '''
 # Written by: Victor
 def find_issue(issue_id):
