@@ -128,23 +128,23 @@ def showIssues():
 
 
 # Written by: Niklas & Victor
-def issue_reg(issueInfo):
+def issue_reg(name, descript):
     """Function that adds the issue to the database"""
     conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
     cur = connection.cursor()
-    sql = """INSERT into CHORE(chore_name, chore_cattegory, chore_value, chore_description, due_date) values(%s, %s, %s, %s, %s);"""
-    cur.execute(sql, (issueInfo[0], issueInfo[1], issueInfo[2], issueInfo[3], issueInfo[4]))
+    sql = """INSERT into CHORE(chore_name, chore_description) values(%s, %s);"""
+    cur.execute(sql, (name, descript))
     conn.commit()
     conn.close()
 
 
 # Written by: Anton
-def home_reg(adress, homeName):
+def home_reg(homeName):
     """Function that adds the issue to the database"""
     conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
     cursor = connection.cursor()
-    sql = """INSERT into HOME(home_name, home_adress) values(%s, %s);"""
-    cursor.execute(sql, (homeName, adress))
+    sql = """INSERT into HOME(home_name) values(%s);"""
+    cursor.execute(sql, (homeName,))
     connection.commit()
     connection.close()
 
@@ -155,13 +155,9 @@ def capture_registration():
     """Function that retrieves the data from the registration form"""
     userInfo = [getattr(request.forms, "inputUsername4"), 
                 getattr(request.forms, "inputEmail4"),
-                getattr(request.forms, "inputFirstname4"),
-                getattr(request.forms, "inputLastname4"),
-                getattr(request.forms, "inputPersonnummer4"),
                 pbkdf2_sha256.hash(getattr(request.forms, "inputPassword4")),
-                getattr(request.forms, "inputAdress4"),
                 getattr(request.forms, "inputHomeName4"),
-                int(getattr(request.forms, "userRole"))]
+                bool(getattr(request.forms, "userRole"))]
     user_reg(userInfo)
     if userInfo[8] == 1:
       home_reg(userInfo[6], userInfo[7])
@@ -171,16 +167,15 @@ def capture_registration():
 
 
 #ISSUES NEEDS TO BE COLLECTED AND ADDED FOR A SPECIFIC HOUSEHOLD //TODO!
-# Written by: Niklas & Victor
+# Written by: Niklas & Victor & Gustaf
 @route("/info-issue", method="POST")
 def capture_issue():
     """Function that retrieves the data from the create-issue form"""
-    issueInfo = [getattr(request.forms, "InputNameIssue"), 
-                getattr(request.forms, "IssueCategory"),
+    issueInfo = [getattr(request.forms, "InputNameIssue"),
                 getattr(request.forms, "PointsForIssue"),
-                getattr(request.forms, "CommentIssue"),
-                getattr(request.forms, "ChooseDate")]
-    issue_reg(issueInfo)
+                getattr(request.forms, "User")
+                getattr(request.forms, "CommentIssue")]
+    issue_reg(issueInfo[0], issueInfo[3])
     return template("show-issues", issues=get_issue())
 
 
@@ -260,5 +255,5 @@ def static_images(filename):
     """Returns the static files, style and js files."""
     return static_file(filename, root="static/images")
 
-run(host='localhost', port=8080, debug=True)
+run(host='localhost', port=8090, debug=True)
 
