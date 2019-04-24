@@ -255,6 +255,12 @@ def static_css(filename):
     return static_file(filename, root="static/css")
 
 
+@route("/static/<filename:path>")
+def static_js(filename):
+    """Returns the static files, style and js files."""
+    return static_file(filename, root="static")
+
+
 @route("/static/images/<filename:path>")
 def static_images(filename):
     """Returns the static files, style and js files."""
