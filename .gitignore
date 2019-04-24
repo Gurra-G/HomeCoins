@@ -1,3 +1,5 @@
 .idea/
 .vscode/
 venv/
+dbcredentials.py
+__pycache__/

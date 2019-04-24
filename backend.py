@@ -6,18 +6,10 @@ from bottle import run, route, error, template, static_file, request, get
 import psycopg2
 import passlib
 from passlib.hash import pbkdf2_sha256
+from dbcredentials import userN, hostN, passwordN, databaseN 
 
 
 bottle.TEMPLATE_PATH.insert(0, 'views')
-
-
-
-"""connection = psycopg2.connect(user="ai7216",
-                                  host="pgserver.mah.se",
-                                  password="yua98z70",
-                                  database="ai7216")
-    cursor = connection.cursor()"""
-
 
 
 @route("/")
@@ -29,48 +21,8 @@ def index():
 # Written by: Anton
 def login_error():
     """Function for flashing the error for login route"""
-    flash = """
-        <style>
-            .form-control {
-                animation-name: form-control;
-                animation-duration: 1s;
-                transition: 0.5s ease;
-            }
-            @keyframes form-control {
-                from {background-color: white;}
-                to {background-color: #FF0000;}
-            }
-            .form-control  {
-                background-color: white;
-                animation-name: form-control;
-                animation-duration: 1s;
-                transition: 0.5s ease;
-            }
-            .form-signin {
-                  animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
-                  transform: translate3d(0, 0, 0);
-                  backface-visibility: hidden;
-                  perspective: 1000px;
-                }
-                
-                @keyframes shake {
-                  10%, 90% {
-                    transform: translate3d(-1px, 0, 0);
-                  }
-                  
-                  20%, 80% {
-                    transform: translate3d(2px, 0, 0);
-                  }
-                
-                  30%, 50%, 70% {
-                    transform: translate3d(-4px, 0, 0);
-                  }
-                
-                  40%, 60% {
-                    transform: translate3d(4px, 0, 0);
-                  }
-                }
-            </style>"""
+    with open('flash.txt', 'r') as file:
+      flash = file.read().replace('\n', '')
 
     return flash
 
@@ -78,15 +30,12 @@ def login_error():
 # Written by: Anton
 def get_the_user(name):
     """Function that retrieves specific user from the database"""
-    connection = psycopg2.connect(user="ai7216",
-                                  host="pgserver.mah.se",
-                                  password="yua98z70",
-                                  database="ai7216")
-    cursor = connection.cursor()
+    conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
+    cur = conn.cursor()
     sql = """SELECT user_id, user_role, user_name, user_password, user_adress, user_home_name FROM USERS where user_name = %s;"""
-    cursor.execute(sql, (name,))
-    user = cursor.fetchall()
-    connection.close()
+    cur.execute(sql, (name,))
+    user = cur.fetchall()
+    conn.close()
     return user
 
 
@@ -124,7 +73,7 @@ def register():
 
 def get_address(adminId):
     """Function that gets the adress and home name of the admin logged in"""
-    conn = psycopg2.connect(user="ai7216", host="pgserver.mah.se", password="yua98z70", database="ai7216")
+    conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
     cur = conn.cursor()
     sql = "SELECT user_home_name, user_adress from users where user_id = %s;"
     cur.execute(sql, (adminId,))
@@ -141,22 +90,19 @@ def register_sub_user(userId):
 # Written by: Anton
 def user_reg(userInfo):
     """Function that adds the user to the database"""
-    connection = psycopg2.connect(user="ai7216",
-                                  host="pgserver.mah.se",
-                                  password="yua98z70",
-                                  database="ai7216")
-    cursor = connection.cursor()
+    conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
+    cur = conn.cursor()
     sql = """INSERT into USERS(user_role, user_name, user_email, user_firstname, user_lastname, 
                  user_social_secnum, user_password, user_adress, user_home_name) values(%s, %s, %s, %s, %s, %s, %s, %s, %s);"""
-    cursor.execute(sql, (userInfo[8], userInfo[0], userInfo[1], userInfo[2], userInfo[3], userInfo[4], userInfo[5], userInfo[6], userInfo[7]))
-    connection.commit()
-    connection.close()
+    cur.execute(sql, (userInfo[8], userInfo[0], userInfo[1], userInfo[2], userInfo[3], userInfo[4], userInfo[5], userInfo[6], userInfo[7]))
+    conn.commit()
+    conn.close()
 
 
 #written by: Anton
 @route("/show-users/<userId>")
 def showUsers(userId):
-    conn = psycopg2.connect(user="ai7216", host="pgserver.mah.se", password="yua98z70", database="ai7216")
+    conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
     cur = conn.cursor()
     sql = "SELECT user_adress from users where user_id = %s;"
     cur.execute(sql, (userId,))
@@ -167,7 +113,7 @@ def showUsers(userId):
 # Written by: Anton
 def get_user(adminAdress):
     """Function that returns all users of a specific household"""
-    conn = psycopg2.connect(user="ai7216", host="pgserver.mah.se", password="yua98z70", database="ai7216")
+    conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
     cur = conn.cursor()
     sql = "SELECT user_name, user_email, user_firstname, user_lastname from users where user_adress = %s and user_role = 2;"
     cur.execute(sql, adminAdress)
@@ -184,24 +130,18 @@ def showIssues():
 # Written by: Niklas & Victor
 def issue_reg(issueInfo):
     """Function that adds the issue to the database"""
-    connection = psycopg2.connect(user="ai7216",
-                                  host="pgserver.mah.se",
-                                  password="yua98z70",
-                                  database="ai7216")
-    cursor = connection.cursor()
+    conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
+    cur = connection.cursor()
     sql = """INSERT into CHORE(chore_name, chore_cattegory, chore_value, chore_description, due_date) values(%s, %s, %s, %s, %s);"""
-    cursor.execute(sql, (issueInfo[0], issueInfo[1], issueInfo[2], issueInfo[3], issueInfo[4]))
-    connection.commit()
-    connection.close()
+    cur.execute(sql, (issueInfo[0], issueInfo[1], issueInfo[2], issueInfo[3], issueInfo[4]))
+    conn.commit()
+    conn.close()
 
 
 # Written by: Anton
 def home_reg(adress, homeName):
     """Function that adds the issue to the database"""
-    connection = psycopg2.connect(user="ai7216",
-                                  host="pgserver.mah.se",
-                                  password="yua98z70",
-                                  database="ai7216")
+    conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
     cursor = connection.cursor()
     sql = """INSERT into HOME(home_name, home_adress) values(%s, %s);"""
     cursor.execute(sql, (homeName, adress))
@@ -250,24 +190,27 @@ def create_issue():
     """Displays the create issue page"""
     return template("create-issue")
 
+
 # Written by: Victor
 def get_issue():
-    '''Function that returns all info about the CHORES/Issues'''
-    conn = psycopg2.connect(user="ai7216", host="pgserver.mah.se", password="yua98z70", database="ai7216")
+    """Function that returns all info about the CHORES/Issues"""
+    conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
     cur = conn.cursor()
     cur.execute("SELECT * FROM CHORE;")
     get_issue_description = cur.fetchall()
     return (get_issue_description)
 
+
 # Written by: Victor
 def get_specific_issue(issue_id):
-    '''Function that returns all info about the CHORES/Issues'''
-    conn = psycopg2.connect(user="ai7216", host="pgserver.mah.se", password="yua98z70", database="ai7216")
+    """Function that returns all info about the CHORES/Issues"""
+    conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
     cur = conn.cursor()
     sql = "SELECT * FROM CHORE where chore_id = %s;"
     cur.execute(sql, (issue_id,))
     get_issue_description = cur.fetchall()
     return (get_issue_description)
+
 
 '''
 # Written by: Victor
@@ -281,10 +224,11 @@ def find_issue(issue_id):
         found_issue = id
     return found_issue
 '''
+
 # Written by: Victor
 @route("/issue/<issue_id>")
 def issue(issue_id):
-    '''En funktion som testar om issuen finns eller ej. Funktionen skickar användaren till olika html sidor beroende på utfall'''
+    """Function that checks if an issue contains info and redirects to different routes."""
     found_issue = get_specific_issue(issue_id)
     print(found_issue)
     for Info in found_issue:
