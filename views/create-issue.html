@@ -6,28 +6,13 @@
                       <label for="InputNameIssue">Namn på syssla</label>
                       <input class="form-control" name="InputNameIssue" id="InputNameIssue" placeholder="Namn på syssla..." required>
                   </div>
-                  <div class="form-group col-md-3">
-                      <label for="IssueCategory">Kategori</label>
-                      <input class="form-control" name="IssueCategory" id="IssueCategory" placeholder="Kategori..." required>
-                  </div>
                 </div>
                 <div class="form-row">
-                  <div class="form-group col-md-2">
-                      <label for="PointsForIssue">Poäng för syssla</label>
-                      <input class="form-control" name="PointsForIssue" id="PointsForIssue" placeholder="Poäng för syssla..." required>
-                  </div>
-                  <div class="form-group col-md-3">
-                      <label for="ChooseDate">Välj datum</label>
-                      <input class="form-control" type="date" name="ChooseDate" id="ChooseDate" placeholder="Välj datum..." required>
-                  </div>
+                    <div class="form-group col-md-6">
+                        <label for="CommentIssue">Kommentar om syssla</label>
+                        <textarea class="form-control" name="CommentIssue" id="CommentIssue" placeholder="Kommentar om syssla..." required></textarea>
+                    </div>
                 </div>
-                <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label for="CommentIssue">Kommentar om syssla</label>
-                    <textarea class="form-control" name="CommentIssue" id="CommentIssue" placeholder="Kommentar om syssla..." required></textarea>
-                </div>
-                </div>
-                
                 <button type="submit" class="btn btn-primary">Spara syssla</button>
             </form>
 % include("_footer2_.html")

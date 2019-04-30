@@ -19,72 +19,73 @@ def index():
 
 
 # Written by: Anton
-def login_error():
+def LoginError():
     """Function for flashing the error for login route"""
     with open('flash.txt', 'r') as file:
-      flash = file.read().replace('\n', '')
-
-    return flash
+      Flash = file.read().replace('\n', '')
+    return Flash
 
 
 # Written by: Anton
-def get_the_user(name):
+def GetTheUser(UserEmail):
     """Function that retrieves specific user from the database"""
     conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
     cur = conn.cursor()
-    sql = """SELECT user_id, user_role, user_name, user_password, user_adress, user_home_name FROM USERS where user_name = %s;"""
-    cur.execute(sql, (name,))
-    user = cur.fetchall()
+    sql = """SELECT user_id, admin, user_email, user_password FROM PERSON where user_email = %s;"""
+    cur.execute(sql, (UserEmail,))
+    User = cur.fetchone()
     conn.close()
-    return user
+    return User
 
 
 # Written by: Anton
 # check if login is requiered to reach deeper templates.
 @route("/user-login", method="POST")
-def login_check():
+def LoginCheck():
     """Function that retrieves the data from the login form and checks the credentials"""
-    loginInfo = [getattr(request.forms, "InputUsername1"), 
+    LoginInfo = [getattr(request.forms, "InputUserEmail1"), 
                  getattr(request.forms, "InputPassword1")]
-    specific_user = get_the_user(loginInfo[0])
-    errorFlash = login_error()
-    for i in range(len(specific_user)):
-        id, role, name, passw, adr, homeName = specific_user[i]
-        if loginInfo[0] == name and pbkdf2_sha256.verify(loginInfo[1], passw) is True:
-            if role == 1:
-                return template("admin-page", id=id)
-            elif role == 2:
-                return template("user-page", id=id)
+    User = GetTheUser(LoginInfo[0])
+    errorFlash = LoginError()
+    UserId = User[0] 
+    Admin = User[1] 
+    UserEmail = User[2] 
+    UserPassword = User[3]
+    if LoginInfo[0] == UserEmail and pbkdf2_sha256.verify(LoginInfo[1], UserPassword) is True:
+      if Admin == True:
+          return template("admin-page", id = UserId)
+      elif Admin == False:
+          return template("user-page", id = UserId)
     else:
         return template("login-page"), errorFlash
 
 
 @route("/login-page")
-def login():
-    """Displayes the login page"""
+def Login():
+    """Displays the login page"""
     return template("login-page")
 
 
 @route("/register-page")
-def register():
-    """Displayes the register page"""
+def Register():
+    """Displays the register page"""
     return template("register-page")
 
 
-def get_address(adminId):
+def GetHomeName(UserId):
     """Function that gets the adress and home name of the admin logged in"""
     conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
     cur = conn.cursor()
-    sql = "SELECT user_home_name, user_adress from users where user_id = %s;"
-    cur.execute(sql, (adminId,))
-    get_admin_adress = cur.fetchone()
-    return get_admin_adress
+    sql = "SELECT home_name from PERSON join LIVES_IN on PERSON.user_id = LIVES_IN.user_id join HOME on LIVES_IN.home_id = HOME.home_id where PERSON.user_id = %s;"
+    cur.execute(sql, (UserId,))
+    HomeName = cur.fetchone()
+    return HomeName
 
 
-@route("/add-subuser/<userId>")
-def register_sub_user(userId):
-    """Displayes the register page"""
-    return template("register-subuser-page", address=get_address(userId))
+@route("/add-subuser/<UserId>")
+def RegisterSubUser(UserId):
+    """Displays the register page"""
+    return template("register-subuser-page", HomeName=GetHomeName(UserId))
 
 
 # Written by: Anton
@@ -92,46 +93,41 @@ def user_reg(userInfo):
     """Function that adds the user to the database"""
     conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
     cur = conn.cursor()
-    sql = """INSERT into USERS(user_role, user_name, user_email, user_firstname, user_lastname, 
-                 user_social_secnum, user_password, user_adress, user_home_name) values(%s, %s, %s, %s, %s, %s, %s, %s, %s);"""
-    cur.execute(sql, (userInfo[8], userInfo[0], userInfo[1], userInfo[2], userInfo[3], userInfo[4], userInfo[5], userInfo[6], userInfo[7]))
+    sql = """INSERT into PERSON(user_name, user_email, admin, user_password) values(%s, %s, %s, %s);"""
+    cur.execute(sql, (userInfo[0], userInfo[1], userInfo[4], userInfo[2]))
     conn.commit()
     conn.close()
 
 
-#written by: Anton
-@route("/show-users/<userId>")
-def showUsers(userId):
-    conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
-    cur = conn.cursor()
-    sql = "SELECT user_adress from users where user_id = %s;"
-    cur.execute(sql, (userId,))
-    get_admin_adress = cur.fetchone()
-    return template("show-users", users=get_user(get_admin_adress))
+# Written by: Anton
+@route("/show-users/<UserId>")
+def ShowUsers(UserId):
+    HomeName = GetHomeName(UserId)
+    return template("show-users", Users=GetUsers(HomeName))
 
 
 # Written by: Anton
-def get_user(adminAdress):
+def GetUsers(HomeName):
     """Function that returns all users of a specific household"""
     conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
     cur = conn.cursor()
-    sql = "SELECT user_name, user_email, user_firstname, user_lastname from users where user_adress = %s and user_role = 2;"
-    cur.execute(sql, adminAdress)
-    get_subusers = cur.fetchall()
-    return get_subusers
+    sql = "SELECT user_name from PERSON join LIVES_IN on PERSON.user_id = LIVES_IN.user_id join HOME on LIVES_IN.home_id = HOME.home_id where home_name = %s;"
+    cur.execute(sql, (HomeName,))
+    Users = cur.fetchall()
+    return Users
 
 
 #Written by: Victor
 @route("/showAllIssues")
 def showIssues():
-  return template("show-issues", issues= get_issue())
+    return template("show-issues", issues= get_issue())
 
 
 # Written by: Niklas & Victor
 def issue_reg(name, descript):
     """Function that adds the issue to the database"""
     conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
-    cur = connection.cursor()
+    cur = conn.cursor()
     sql = """INSERT into CHORE(chore_name, chore_description) values(%s, %s);"""
     cur.execute(sql, (name, descript))
     conn.commit()
@@ -139,43 +135,38 @@ def issue_reg(name, descript):
 
 
 # Written by: Anton
-def home_reg(homeName):
+def home_reg(HomeName):
     """Function that adds the issue to the database"""
     conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
-    cursor = connection.cursor()
+    cursor = conn.cursor()
     sql = """INSERT into HOME(home_name) values(%s);"""
-    cursor.execute(sql, (homeName,))
-    connection.commit()
-    connection.close()
+    cursor.execute(sql, (HomeName,))
+    conn.commit()
+    conn.close()
 
 
 # Written by: Anton
 @route("/user-registration", method="POST")
 def capture_registration():
     """Function that retrieves the data from the registration form"""
-    userInfo = [getattr(request.forms, "inputUsername4"), 
+    userInfo = [getattr(request.forms, "inputName4"), 
                 getattr(request.forms, "inputEmail4"),
                 pbkdf2_sha256.hash(getattr(request.forms, "inputPassword4")),
                 getattr(request.forms, "inputHomeName4"),
-                bool(getattr(request.forms, "userRole"))]
+                getattr(request.forms, "inputAdmin4")]
     user_reg(userInfo)
-    if userInfo[8] == 1:
-      home_reg(userInfo[6], userInfo[7])
-      return template("successful-registration")
-    else: 
-      return template("admin-page")
+    home_reg(userInfo[3])
+    return template("successful-registration")
 
 
-#ISSUES NEEDS TO BE COLLECTED AND ADDED FOR A SPECIFIC HOUSEHOLD //TODO!
+#ISSUES NEEDS TO BE COLLECTED AND ADDED FOR A SPECIFIC HOUSEHOLD !
 # Written by: Niklas & Victor & Gustaf
 @route("/info-issue", method="POST")
 def capture_issue():
     """Function that retrieves the data from the create-issue form"""
     issueInfo = [getattr(request.forms, "InputNameIssue"),
-                getattr(request.forms, "PointsForIssue"),
-                getattr(request.forms, "User")
                 getattr(request.forms, "CommentIssue")]
-    issue_reg(issueInfo[0], issueInfo[3])
+    issue_reg(issueInfo[0], issueInfo[1])
     return template("show-issues", issues=get_issue())
 
 

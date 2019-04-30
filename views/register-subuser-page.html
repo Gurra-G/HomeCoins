@@ -2,45 +2,27 @@
         <h3>Registrera användare nedan:</h3>
         <form action="/user-registration" method="post">
           <input type="hidden" id="userRole" name="userRole" value="2">
-          <div class="form-row">
-            <div class="form-group col-md-6">
-              <label for="inputUsername4">Användarnamn</label>
-              <input class="form-control" name="inputUsername4" id="inputUsername4" placeholder="Användarnamn..." required>
+            <div class="form-group col-md-3">
+              <label for="inputUsername4">Fullständigt Namn</label>
+              <input class="form-control" name="inputUsername4" id="inputUsername4" placeholder="Fullständigt..." required>
             </div>
-            <div class="form-group col-md-6">
+            <div class="form-group col-md-3">
               <label for="inputEmail4">Email</label>
               <input type="email" class="form-control" name="inputEmail4" id="inputEmail4" placeholder="Email..." required>
             </div>
-          </div>
-            <div class="form-row">
-            <div class="form-group col-md-6">
-              <label for="inputFirstname4">Förnamn</label>
-              <input class="form-control" name="inputFirstname4" id="inputFirstname4" placeholder="Förnamn..." required>
-            </div>
-            <div class="form-group col-md-6">
-              <label for="inputLastname4">Efternamn</label>
-              <input class="form-control" name="inputLastname4" id="inputLastname4" placeholder="Efternamn..." required>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group col-md-6">
-              <label for="inputPersonnummer4">Personnummer</label>
-              <input class="form-control" name="inputPersonnummer4" id="inputPersonnummer4" placeholder="Personnummer..." required>
-            </div>
-            <div class="form-group col-md-6">
+            <div class="form-group col-md-3">
               <label for="inputPassword4">Lösenord</label>
               <input type="password" class="form-control" name="inputPassword4" id="inputPassword4" placeholder="Lösenord..." required>
             </div>
-          </div>
+            <div class="form-group col-md-3">
+              <label for="inputAdmin4">Admin</label>
+              <input type="checkbox" class="form-control" name="inputAdmin4" id="inputAdmin4" required>
+            </div>
           <div class="form-row">
-            <div class="form-group col-md-6">
-                <input type="hidden" class="form-control" name="inputAdress4" id="inputAdress4" value="{{address[1]}}" required>
-            </div>
-            <div class="form-group col-md-6">
-                <input type="hidden" class="form-control" name="inputHomeName4" id="inputHomeName4" value="{{address[0]}}" required>
+            <div class="form-group col-md-3">
+                <input type="hidden" class="form-control" name="inputHomeName4" id="inputHomeName4" value="HomeName" required>
             </div>
           </div>
-            
           <button type="submit" class="btn btn-primary">Registrera användare</button>
         </form>
 % include("_footer2_.html")
