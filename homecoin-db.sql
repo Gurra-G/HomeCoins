@@ -13,6 +13,7 @@ drop table USER cascade;
 drop table PERSON cascade;
 drop table LIVES_IN cascade;
 drop table RESPONSIBILITY cascade;
+drop table chore_cattegory cascade;
 
 
 create table PERSON

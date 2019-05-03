@@ -118,9 +118,10 @@ def GetUsers(HomeName):
 
 
 #Written by: Victor
-@route("/showAllIssues")
-def showIssues():
-    return template("show-issues", issues= get_issue())
+@route("/show-issues/<UserId>")
+def ShowIssues(UserId):
+    UsersChores = GetChores(UserId)
+    return template("show-issues", Chores=UsersChores)
 
 
 # Written by: Niklas & Victor
@@ -136,7 +137,7 @@ def issue_reg(name, descript):
 
 # Written by: Anton
 def home_reg(HomeName):
-    """Function that adds the issue to the database"""
+    """Function that adds the Home to the database"""
     conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
     cursor = conn.cursor()
     sql = """INSERT into HOME(home_name) values(%s);"""
@@ -167,7 +168,7 @@ def capture_issue():
     issueInfo = [getattr(request.forms, "InputNameIssue"),
                 getattr(request.forms, "CommentIssue")]
     issue_reg(issueInfo[0], issueInfo[1])
-    return template("show-issues", issues=get_issue())
+    return template("show-issues")
 
 
 # Written by: Niklas & Victor
@@ -178,13 +179,15 @@ def create_issue():
 
 
 # Written by: Victor
-def get_issue():
-    """Function that returns all info about the CHORES/Issues"""
+def GetChores(UserId):
+    """Function that returns all CHORES from a specific PERSON"""
     conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
     cur = conn.cursor()
-    cur.execute("SELECT * FROM CHORE;")
-    get_issue_description = cur.fetchall()
-    return (get_issue_description)
+    sql = "SELECT chore_name from CHORE join RESPONSIBILITY on CHORE.chore_id = RESPONSIBILITY.chore_id where user_id = %s;"
+    cur.execute(sql, (UserId,))
+    GetChores = cur.fetchall()
+    print (GetChores)
+    return (GetChores)
 
 
 # Written by: Victor

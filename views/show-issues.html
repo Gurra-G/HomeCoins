@@ -3,10 +3,11 @@
     <h1>Syssla</h1>
     <div>
     <ul>
-        % for issue in issues:
-            <li><a href="/issue/{{issue[0]}}">{{issue[1]}}</a></li>
+        % for Chore in UsersChores:
+            <li>
+                <a href="/issue/{{issue[0]}}">{{UsersChores[0]}}</a>
+            </li>
         % end
-   
     </ul>
 </div>  
 

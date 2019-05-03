@@ -38,9 +38,10 @@
   user-select: none;
   cursor: pointer;
   left: 2rem;
-  top: 2rem;
+  top: 0.8rem;
   position: fixed;
   width: 2.5rem;
+  height: 2rem;
   z-index: 2;
 }
 
