@@ -76,7 +76,7 @@ def GetHomeName(UserId):
     """Function that gets the adress and home name of the admin logged in"""
     conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
     cur = conn.cursor()
-    sql = "SELECT home_name from PERSON join LIVES_nkIN on PERSON.user_id = LIVES_IN.user_id join HOME on LIVES_IN.home_id = HOME.home_id where PERSON.user_id = %s;"
+    sql = "SELECT home_name from PERSON join LIVES_IN on PERSON.user_id = LIVES_IN.user_id join HOME on LIVES_IN.home_id = HOME.home_id where PERSON.user_id = %s;"
     cur.execute(sql, (UserId,))
     HomeName = cur.fetchone()
     return HomeName
@@ -176,17 +176,15 @@ def ShowBank(UserId):
     UsersPoints = GetBank(UserId)
     return template("bank", points=UsersPoints)
 
-"""
 #Written by: Victor and Niklas
 def GetBank(UserId):
-    """Function that returns all users of a specific household"""
+    """"""
     conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
     cur = conn.cursor()
-    sql = "SELECT user_id, account_balance from BANK_ACCOUNT where BANK_ACCOUNT.user_id = %s;"
+    sql = "SELECT account_balance from BANK_ACCOUNT where user_id = %s;"
     cur.execute(sql, (UserId,))
     Points = cur.fetchall()
     return Points
-    """
 
 # Written by: Niklas & Victor
 @route("/create-issue")
@@ -203,7 +201,6 @@ def GetChores(UserId):
     sql = "SELECT chore_name from CHORE join RESPONSIBILITY on CHORE.chore_id = RESPONSIBILITY.chore_id where user_id = %s;"
     cur.execute(sql, (UserId,))
     GetChores = cur.fetchall()
-    print (GetChores)
     return (GetChores)
 
 
