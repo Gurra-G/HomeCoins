@@ -200,8 +200,8 @@ def GetChores(UserId):
     cur = conn.cursor()
     sql = "SELECT chore_name from CHORE join RESPONSIBILITY on CHORE.chore_id = RESPONSIBILITY.chore_id where user_id = %s;"
     cur.execute(sql, (UserId,))
-    GetChores = cur.fetchall()
-    return (GetChores)
+    GetAllChores = cur.fetchall()
+    return GetAllChores
 
 
 # Written by: Victor
@@ -212,7 +212,7 @@ def get_specific_issue(issue_id):
     sql = "SELECT * FROM CHORE where chore_id = %s;"
     cur.execute(sql, (issue_id,))
     get_issue_description = cur.fetchall()
-    return (get_issue_description)
+    return get_issue_description
 
 
 '''
