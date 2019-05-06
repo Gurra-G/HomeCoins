@@ -19,31 +19,29 @@
     <div class="nav-toggle">
       <div class="nav-toggle-bar"></div>
     </div>
-
     <nav class="nav">
       <ul>
         <h4>Dashboard</h4>
-        <li><a href="/bank/UserId">Bank</a></li>
-        <li><a href="/show-users/{{id}}">Visa användare</a></li>
-        <li><a href="/add-subuser/{{id}}">Lägg till användare</a></li>
-        <li><a href="#">Statistik 1</a></li>
-        <li><a href="#">Statstik 2</a></li>
-      </ul>
+          <li><a href="/bank/{{UId}}">Bank</a></li>
+          <li><a href="/show-users/{{UId}}">Visa användare</a></li>
+          <li><a href="/add-subuser/{{UId}}">Lägg till användare</a></li>
+          <li><a href="#">Statistik 1</a></li>
+          <li><a href="#">Statstik 2</a></li>
+        </ul>
 
-      <ul>
-        <h4>Sysslor</h4>
-        <li><a href="#">Visa sysslor</a></li>
-        <li><a href="/create-issue">Lägg till ny syssla</a></li>
-        <li><a href="#">Tilldela syssla</a></li>
-        <li><a href="/show-issues/{{id}}">Mina sysslor</a></li>
-        <li><a href="#">Avslutade sysslor</a></li>
-        <li><a href="#">Mina poäng</a></li>
-        <li id="LogOutButton"><a href="#">Logga ut</a></li>
-      </ul>
-    </nav>
-
+        <ul>
+          <h4>Sysslor</h4>
+          <li><a href="#">Visa sysslor</a></li>
+          <li><a href="/create-issue/{{UId}}">Lägg till ny syssla</a></li>
+          <li><a href="#">Tilldela syssla</a></li>
+          <li><a href="/show-issues/{{UId}}">Mina sysslor</a></li>
+          <li><a href="#">Avslutade sysslor</a></li>
+          <li><a href="#">Mina poäng</a></li>
+          <li id="LogOutButton"><a href="#">Logga ut</a></li>
+        </ul>
+      </nav>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <a class="navbar-brand" href="#">HomeCoins</a>
+      <a class="navbar-brand" href="/admin-page/{{UId}}">HomeCoins</a>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item active">
@@ -60,4 +58,3 @@
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1 class="h2">Dashboard</h1>
       </div>
-    <script src="/static/burger.js"></script>

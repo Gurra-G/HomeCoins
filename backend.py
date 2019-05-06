@@ -35,6 +35,7 @@ def GetTheUser(UserEmail):
     cur.execute(sql, (UserEmail,))
     User = cur.fetchone()
     conn.close()
+    print(User)
     return User
 
 
@@ -46,16 +47,18 @@ def LoginCheck():
     LoginInfo = [getattr(request.forms, "InputUserEmail1"), 
                  getattr(request.forms, "InputPassword1")]
     User = GetTheUser(LoginInfo[0])
+    print(User)
     errorFlash = LoginError()
     UserId = User[0] 
+    print(UserId)
     Admin = User[1] 
     UserEmail = User[2] 
     UserPassword = User[3]
     if LoginInfo[0] == UserEmail and pbkdf2_sha256.verify(LoginInfo[1], UserPassword) is True:
       if Admin == True:
-          return template("admin-page", id = UserId)
+          return template("admin-page", UId = UserId)
       elif Admin == False:
-          return template("user-page", id = UserId)
+          return template("user-page", UId = UserId)
     else:
         return template("login-page"), errorFlash
 
@@ -82,10 +85,12 @@ def GetHomeName(UserId):
     return HomeName
 
 
-@route("/add-subuser/<UserId>")
-def RegisterSubUser(UserId):
+@route("/add-subuser/<UId>")
+def RegisterSubUser(UId):
     """Displays the register page"""
-    return template("register-subuser-page", HomeName=GetHomeName(UserId))
+    HomeInfo = GetHomeName(UId)
+    print(HomeInfo)
+    return template("register-subuser-page", HomeName=HomeInfo, UId=UId)
 
 
 # Written by: Anton
@@ -94,16 +99,16 @@ def user_reg(userInfo):
     conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
     cur = conn.cursor()
     sql = """INSERT into PERSON(user_name, user_email, admin, user_password) values(%s, %s, %s, %s);"""
-    cur.execute(sql, (userInfo[0], userInfo[1], userInfo[4], userInfo[2]))
+    cur.execute(sql, (userInfo[0], userInfo[1], userInfo[3], userInfo[2]))
     conn.commit()
     conn.close()
 
 
 # Written by: Anton
-@route("/show-users/<UserId>")
-def ShowUsers(UserId):
-    HomeName = GetHomeName(UserId)
-    return template("show-users", Users=GetUsers(HomeName))
+@route("/show-users/<UId>")
+def ShowUsers(UId):
+    HomeName = GetHomeName(UId)
+    return template("show-users", Users=GetUsers(HomeName), UId=UId)
 
 
 # Written by: Anton
@@ -118,63 +123,112 @@ def GetUsers(HomeName):
 
 
 #Written by: Victor
-@route("/show-issues/<UserId>")
-def ShowIssues(UserId):
-    UsersChores = GetChores(UserId)
-    return template("show-issues", Chores=UsersChores)
+@route("/show-issues/<UId>")
+def ShowIssues(UId):
+    UsersChores = GetChores(UId)
+    print(UsersChores)
+    return template("show-issues", Chores=UsersChores, UId=UId)
 
 
 # Written by: Niklas & Victor
-def issue_reg(name, descript):
+def issue_reg(UserInfo):
     """Function that adds the issue to the database"""
     conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
     cur = conn.cursor()
-    sql = """INSERT into CHORE(chore_name, chore_description) values(%s, %s);"""
-    cur.execute(sql, (name, descript))
+    Name = UserInfo[0]
+    Descript = UserInfo[1]
+    Worth = UserInfo[2]
+    Sql = """INSERT into CHORE(chore_name, chore_description, chore_worth) values(%s, %s, %s);"""
+    cur.execute(Sql, (Name, Descript, Worth))
+    Sql2 = """SELECT chore_id FROM CHORE order by chore_id DESC limit 1"""
+    print (Sql2)
+    cur.execute(Sql2)
+    ChoreInfo = cur.fetchone()
+    ChoreId = ChoreInfo[0]
+    Sql3 = """INSERT into RESPONSIBILITY(chore_id, user_id) values(%s, %s)"""
+    cur.execute(Sql3, (ChoreId, UserInfo[3]))
     conn.commit()
     conn.close()
 
 
 # Written by: Anton
-def home_reg(HomeName):
+def home_reg(UserEmail, HomeName):
     """Function that adds the Home to the database"""
     conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
-    cursor = conn.cursor()
-    sql = """INSERT into HOME(home_name) values(%s);"""
-    cursor.execute(sql, (HomeName,))
+    cur = conn.cursor()
+    Sql = """INSERT into HOME(home_name) values(%s);"""
+    cur.execute(Sql, (HomeName,))
+    Sql2 = """Select user_id from PERSON where user_email = %s"""
+    cur.execute(Sql2, (UserEmail,))
+    UserInfo = cur.fetchone()
+    UId = UserInfo[0]
+    Sql3 = """Select home_id from HOME order by home_id DESC limit 1"""
+    cur.execute(Sql3)
+    HomeInfo = cur.fetchone()
+    HomeId = HomeInfo[0]
+    Sql4 = """INSERT into LIVES_IN(home_id, user_id) values(%s, %s)"""
+    cur.execute(Sql4, (HomeId, UId))
     conn.commit()
     conn.close()
 
 
 # Written by: Anton
-@route("/user-registration", method="POST")
-def capture_registration():
+@route("/user-registration/<UId>", method="POST")
+def capture_registration(UId):
     """Function that retrieves the data from the registration form"""
-    userInfo = [getattr(request.forms, "inputName4"), 
+    userInfo = [getattr(request.forms, "inputUserName4"), 
                 getattr(request.forms, "inputEmail4"),
                 pbkdf2_sha256.hash(getattr(request.forms, "inputPassword4")),
-                getattr(request.forms, "inputHomeName4"),
+                getattr(request.forms, "inputAdmin4"),
+                getattr(request.forms, "inputHomeName4")]
+    user_reg(userInfo)
+    home_reg(userInfo[1], userInfo[4])
+    return template("successful-registration")
+    
+@route("/subuser-registration/<UId>", method="POST")
+def CaptureSubuserRegistration(UId):
+    """Function that retrieves the data from the registration form"""
+    userInfo = [getattr(request.forms, "inputUserName4"), 
+                getattr(request.forms, "inputEmail4"),
+                pbkdf2_sha256.hash(getattr(request.forms, "inputPassword4")),
                 getattr(request.forms, "inputAdmin4")]
     user_reg(userInfo)
-    home_reg(userInfo[3])
-    return template("successful-registration")
+    RegLivesIn(userInfo[1], UId)
+    return template("admin-page", UId=UId)
+
+def RegLivesIn(UserEmail, UId):
+    conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
+    cur = conn.cursor()
+    Sql = """Select home_id from LIVES_IN where user_id = %s"""
+    cur.execute(Sql, (UId,))
+    HomeId = cur.fetchone()
+    Sql2 = """Select user_id from PERSON where user_email = %s"""
+    cur.execute(Sql2, (UserEmail,))
+    UserInfo = cur.fetchone()
+    SUId = UserInfo[0]
+    Sql4 = """INSERT into LIVES_IN(home_id, user_id) values(%s, %s)"""
+    cur.execute(Sql4, (HomeId, SUId))
+    conn.commit()
+    conn.close()
 
 
 #ISSUES NEEDS TO BE COLLECTED AND ADDED FOR A SPECIFIC HOUSEHOLD !
 # Written by: Niklas & Victor & Gustaf
-@route("/info-issue", method="POST")
-def capture_issue():
+@route("/choreReg/<UId>", method="POST")
+def capture_issue(UId):
     """Function that retrieves the data from the create-issue form"""
     issueInfo = [getattr(request.forms, "InputNameIssue"),
-                getattr(request.forms, "CommentIssue")]
-    issue_reg(issueInfo[0], issueInfo[1])
-    return template("show-issues")
+                getattr(request.forms, "CommentIssue"),
+                getattr(request.forms, "WorthIssue"),
+                getattr(request.forms, "UserIssue")]
+    issue_reg(issueInfo)
+    return template("admin-page", UId=UId)
 
 #Written by: Victor and Niklas
-@route("/bank/<UserId>")
-def ShowBank(UserId):
-    UsersPoints = GetBank(UserId)
-    return template("bank", points=UsersPoints)
+@route("/bank/<UId>")
+def ShowBank(UId):
+    UsersPoints = GetBank(UId)
+    return template("bank", points=UsersPoints, UId=UId)
 
 #Written by: Victor and Niklas
 def GetBank(UserId):
@@ -187,10 +241,18 @@ def GetBank(UserId):
     return Points
 
 # Written by: Niklas & Victor
-@route("/create-issue")
-def create_issue():
+@route("/create-issue/<UId>")
+def create_issue(UId):
     """Displays the create issue page"""
-    return template("create-issue")
+    conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
+    cur = conn.cursor()
+    Sql = """SELECT home_id from LIVES_IN where user_id = %s"""
+    cur.execute(Sql, (UId,))
+    HomeId = cur.fetchone()
+    Sql2 = """SELECT user_name, PERSON.user_id from PERSON join LIVES_IN on PERSON.user_id = LIVES_IN.user_id where home_id = %s"""
+    cur.execute(Sql2, (HomeId,))
+    HomesUsers = cur.fetchall()
+    return template("create-issue", Users=HomesUsers, UId=UId)
 
 
 # Written by: Victor
@@ -198,7 +260,7 @@ def GetChores(UserId):
     """Function that returns all CHORES from a specific PERSON"""
     conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
     cur = conn.cursor()
-    sql = "SELECT chore_name from CHORE join RESPONSIBILITY on CHORE.chore_id = RESPONSIBILITY.chore_id where user_id = %s;"
+    sql = "SELECT * from CHORE join RESPONSIBILITY on CHORE.chore_id = RESPONSIBILITY.chore_id where user_id = %s;"
     cur.execute(sql, (UserId,))
     GetAllChores = cur.fetchall()
     return GetAllChores
@@ -226,19 +288,18 @@ def find_issue(issue_id):
       if id == issue_id:
         found_issue = id
     return found_issue
-'''
 
 # Written by: Victor
-@route("/issue/<issue_id>")
-def issue(issue_id):
+@route("/Chore/<ChoreId>")
+def Chore(ChoreId):
     """Function that checks if an issue contains info and redirects to different routes."""
-    found_issue = get_specific_issue(issue_id)
-    print(found_issue)
+    FoudChore = GetChore(ChoreId)
     for Info in found_issue:
       if Info == None:
           return template("admin-page")
       else:
           return template("edit-issue", { "Info": Info })
+'''
 
 @error(404)
 def error404(error):

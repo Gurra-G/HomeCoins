@@ -1,6 +1,6 @@
 % include("_header2_.html")
             <h3>Skapa ny syssla nedan:</h3>
-            <form action="/info-issue" method="post">
+            <form action="/choreReg/{{UId}}" method="post">
                 <div class="form-row">
                   <div class="form-group col-md-3">
                       <label for="InputNameIssue">Namn på syssla</label>
@@ -11,6 +11,24 @@
                     <div class="form-group col-md-6">
                         <label for="CommentIssue">Kommentar om syssla</label>
                         <textarea class="form-control" name="CommentIssue" id="CommentIssue" placeholder="Kommentar om syssla..." required></textarea>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label for="WorthIssue">Sysslans värde</label>
+                        <input class="form-control" name="WorthIssue" id="WorthIssue" type="" placeholder="Sysslans värde..." required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label for="UserIssue">Tilldela Syssla</label>
+                        <select name="UserIssue" class="custom-select" id="inputGroupSelect01">
+                            
+                            <option selected>välj användare...</option>
+                            % for User in Users:
+                            <option value="{{User[1]}}">{{User[0]}}</option>
+                            % end
+                        </select>
                     </div>
                 </div>
                 <button type="submit" class="btn btn-primary">Spara syssla</button>

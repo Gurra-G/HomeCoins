@@ -1,10 +1,10 @@
 % include("_header2_.html")
         <h3>Registrera användare nedan:</h3>
-        <form action="/user-registration" method="post">
+        <form action="/subuser-registration/{{UId}}" method="post">
           <input type="hidden" id="userRole" name="userRole" value="2">
             <div class="form-group col-md-3">
-              <label for="inputUsername4">Fullständigt Namn</label>
-              <input class="form-control" name="inputUsername4" id="inputUsername4" placeholder="Fullständigt..." required>
+              <label for="inputUserName4">Fullständigt Namn</label>
+              <input type="text" class="form-control" name="inputUserName4" id="inputUserName4" placeholder="Fullständigt Namn..." required>
             </div>
             <div class="form-group col-md-3">
               <label for="inputEmail4">Email</label>
@@ -16,13 +16,8 @@
             </div>
             <div class="form-group col-md-3">
               <label for="inputAdmin4">Admin</label>
-              <input type="checkbox" class="form-control" name="inputAdmin4" id="inputAdmin4" required>
+              <input type="checkbox" class="form-control" name="inputAdmin4" id="inputAdmin4">
             </div>
-          <div class="form-row">
-            <div class="form-group col-md-3">
-                <input type="hidden" class="form-control" name="inputHomeName4" id="inputHomeName4" value="HomeName" required>
-            </div>
-          </div>
           <button type="submit" class="btn btn-primary">Registrera användare</button>
         </form>
 % include("_footer2_.html")

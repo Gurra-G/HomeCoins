@@ -1,12 +1,11 @@
 % include("_header2_.html")
+
 <div>
     <h1>Syssla</h1>
     <div>
     <ul>
         % for Chore in Chores:
-            <li>
-                <a href="/issue/{{issue[0]}}">{{Chores[0]}}</a>
-            </li>
+            <li>{{Chore}}</li>
         % end
     </ul>
 </div>  
