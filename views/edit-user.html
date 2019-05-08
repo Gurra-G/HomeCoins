@@ -1,23 +1,19 @@
 % include("_header2_.html")
         <h3>Registrera användare nedan:</h3>
-        <form action="/subuser-registration/{{UId}}" method="post">
+        <form action="/update-user/{{UId}}/{{User[0]}}" method="post">
           <input type="hidden" id="userRole" name="userRole" value="2">
             <div class="form-group col-md-3">
               <label for="inputUserName4">Fullständigt Namn</label>
-              <input type="text" class="form-control" name="inputUserName4" id="inputUserName4" placeholder="Fullständigt Namn..." required>
+              <input type="text" class="form-control" name="inputUserName4" id="inputUserName4" value="{{User[1]}}" required>
             </div>
             <div class="form-group col-md-3">
               <label for="inputEmail4">Email</label>
-              <input type="email" class="form-control" name="inputEmail4" id="inputEmail4" placeholder="Email..." required>
-            </div>
-            <div class="form-group col-md-3">
-              <label for="inputPassword4">Lösenord</label>
-              <input type="password" class="form-control" name="inputPassword4" id="inputPassword4" placeholder="Lösenord..." required>
+              <input type="email" class="form-control" name="inputEmail4" id="inputEmail4" value="{{User[2]}}" required>
             </div>
             <div class="form-group col-md-3">
               <input type="radio" id="inputAdmin4" value="true" name="inputAdmin4">Förälder<br>
               <input type="radio" id="inputAdmin4" value="false" name="inputAdmin4">Barn<br>
             </div>
-          <button type="submit" class="btn btn-primary">Registrera användare</button>
+          <button type="submit" class="btn btn-primary">Spara</button>
         </form>
 % include("_footer2_.html")

@@ -1,37 +1,35 @@
 % include("_header2_.html")
-
-<h3>Redigera syssla nedan:</h3>
-            % 
-                         
-            <form action="/info-issue" method="post">
-                <div class="form-row">
-                  <div class="form-group col-md-3">
-                      <label for="InputNameIssue">Namn på syssla</label>
-                      <input class="form-control" name="InputNameIssue" id="InputNameIssue" value="{{Info[1]}}"  required>
-                  </div>
-                  <div class="form-group col-md-3">
-                      <label for="IssueCategory">Kategori</label>
-                      <input class="form-control" name="IssueCategory" id="IssueCategory" value="{{Info[2]}}"  required>
-                  </div>
+    <h3>Skapa ny syssla nedan:</h3>
+        <form action="/update-chore/{{UId}}/{{Chore[0]}}" method="post">
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    <label for="InputNameIssue">Namn på syssla</label>
+                    <input class="form-control" name="InputNameIssue" id="InputNameIssue" value="{{Chore[1]}}" required>
                 </div>
-                <div class="form-row">
-                  <div class="form-group col-md-2">
-                      <label for="PointsForIssue">Poäng för syssla</label>
-                      <input class="form-control" name="PointsForIssue" id="PointsForIssue" value="{{Info[3]}}"  required>
-                  </div>
-                  <div class="form-group col-md-3">
-                      <label for="ChooseDate">Välj datum</label>
-                      <input class="form-control" type="date" name="ChooseDate" id="ChooseDate" value="{{Info[5]}}"  required>
-                  </div>
-                </div>
-                <div class="form-row">
+            </div>
+            <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="CommentIssue">Kommentar om syssla</label>
-                    <textarea class="form-control" name="CommentIssue" id="CommentIssue" value="{{Info[4]}}"  required></textarea>
+                    <textarea class="form-control" name="CommentIssue" id="CommentIssue" required>{{Chore[2]}}</textarea>
                 </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    <label for="WorthIssue">Sysslans värde</label>
+                    <input class="form-control" name="WorthIssue" id="WorthIssue" type="" value="{{Chore[3]}}" required>
                 </div>
-                
-                <button type="submit" class="btn btn-primary">Spara syssla</button>
-            </form>
-            % end
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    <label for="UserIssue">Tilldela Syssla</label>
+                    <select name="UserIssue" class="custom-select" id="inputGroupSelect01">
+                        <option selected>välj användare...</option>
+                        % for User in Users:
+                        <option value="{{User[0]}}">{{User[1]}}</option>
+                        % end
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Spara syssla</button>
+        </form>
 % include("_footer2_.html")

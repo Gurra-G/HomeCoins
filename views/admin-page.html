@@ -1,47 +1,59 @@
 % include("_header2_.html") 
-<div id="mSlider" class="Slider">
-    <ul class="MsContent">
+<h1>Användare:</h1>
+<div class="row">
     % for User in Users:
-        <li class="item">
-            <a href="/user-details/{{UId}}/{{User[0]}}/{{Users}}/{{Chores}}/{{HomeInfo}}">{{User[1]}}</a>
-        </li>
-    % end
-    </ul>
-</div>
-<div id="mSlider" class="Slider">
-    <ul class="MsContent">
-    % for Chore in Chores:
-        <li class="item">
-            {{Chore[1]}}
-        </li>
-    % end
-    </ul>
-</div>
-<div class="pagination"></div>
-
-<div class="container">
-        <h1>Slider</h1>
-            <div class="slider center">       
-                <div class="slide">
-                  <div class="cl cl-yellow"></div>
-                </div>
-                <div class="slide">
-                  <div class="cl cl-blue"></div>
-                </div>
-                <div class="slide">
-                  <div class="cl cl-red"></div>
-                </div>
-              <div class="slide">
-                  <div class="cl cl-yellow"></div>
-                </div>
-                <div class="slide">
-                  <div class="cl cl-blue"></div>
-                </div>
-                <div class="slide">
-                  <div class="cl cl-red"></div>
-                </div>
-                
+    <div class="col-md-4">
+      <div class="card mb-4 shadow-sm">
+        <a href="/user-details/{{UId}}/{{User[0]}}" style=" background-color: #55595c">
+          <img src="/static/images/User_Avatar.png" style="display: block; height: 180px; width: 180px; margin: 20px auto 20px auto;">
+        </a>
+        <div class="card-body">
+          <p class="card-text">{{User[1]}}</p>
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="btn-group">
+              <a href="/edit-user/{{UId}}/{{User[0]}}">
+                <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+              </a>
             </div>
-            <div class="pagination"></div>
+            <small class="text-muted">Admin: {{User[3]}}</small>
+            <small class="text-muted">{{User[4]}}</small>
+          </div>
+        </div>
       </div>
+    </div>
+    % end
+  </div>
+<hr>
+<h1>Sysslor:</h1>
+<div class="row">
+  % for Chore in Chores:
+  <div class="col-md-4">
+    <div class="card mb-4 shadow-sm">
+      <svg class="bd-placeholder-img card-img-top" width="100%" height="225" 
+        xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" 
+        focusable="false" role="img" aria-label="Placeholder: Thumbnail">
+          <title>{{Chore[1]}}</title>
+          <rect width="100%" height="100%" fill="#55595c"></rect>
+          <text x="50%" y="50%" fill="#eceeef" dy=".3em">{{Chore[1]}}</text>
+      </svg>
+      <div class="card-body">
+        <p class="card-text">{{Chore[2]}}</p>
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="btn-group">
+            <a href="/edit-chore/{{UId}}/{{Chore[0]}}">
+              <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+            </a>
+          </div>
+          <small class="text-muted">{{Chore[3]}} :-</small>
+          <small class="text-muted">{{Chore[5]}}</small>
+        </div>
+      </div>
+    </div>
+  </div>
+  % end
+</div>
+
+
+
+
 % include("_footer2_.html") 

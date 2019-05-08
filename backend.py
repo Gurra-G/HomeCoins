@@ -18,7 +18,6 @@ def index():
     return template("index")
 
 
-# Written by: Anton
 def LoginError():
     """Function for flashing the error for login route"""
     with open('flash.txt', 'r') as file:
@@ -26,7 +25,6 @@ def LoginError():
     return Flash
 
 
-# Written by: Anton
 def GetTheUser(UserEmail):
     """Function that retrieves specific user from the database"""
     conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
@@ -37,8 +35,6 @@ def GetTheUser(UserEmail):
     return User
 
 
-# Written by: Anton
-# check if login is requiered to reach deeper templates.
 @route("/user-login", method="POST")
 def LoginCheck():
     """Function that retrieves the data from the login form and checks the credentials"""
@@ -79,6 +75,7 @@ def UserInfos(HomeId):
     UserInfo = cur.fetchall()
     return UserInfo
 
+
 @route("/login-page")
 def Login():
     """Displays the login page"""
@@ -100,14 +97,22 @@ def GetHomeInfo(UId):
     HomeName = cur.fetchone()
     return HomeName
 
+@route("/go-home/<UId>")
+def GoHome(UId):
+    """Displays the admin page"""
+    HomeInfo = GetHomeInfo(UId)
+    return template("admin-page", HomeInfo=HomeInfo, Chores=ChoreInfos(HomeInfo[1]), Users=UserInfos(HomeInfo[1]), UId=UId)
 
-@route("/add-subuser/<UId>/<Users>/<Chores>/<HomeInfo>")
-def RegisterSubUser(UId, Users, Chores, HomeInfo):
+
+@route("/add-subuser/<UId>")
+def RegisterSubUser(UId):
     """Displays the register page"""
-    return template("register-subuser-page", HomeInfo=HomeInfo, Chores=Chores, Users=Users, UId=UId)
+    HomeInfo = GetHomeInfo(UId)
+    Chore = ChoreInfos(HomeInfo[1])
+    Users = UserInfos(HomeInfo[1])
+    return template("register-subuser-page", HomeInfo=HomeInfo, Chores=Chore, Users=Users, UId=UId)
 
 
-# Written by: Anton
 def user_reg(userInfo):
     """Function that adds the user to the database"""
     conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
@@ -120,40 +125,85 @@ def user_reg(userInfo):
     Balance = int(0)
     Sql3 = "INSERT into BANK_ACCOUNT(user_id, account_balance) values(%s, %s)"
     cur.execute(Sql3, (UserId, Balance))
-    UserInfo = cur.fetchone()
-    UId = UserInfo[0]
     conn.commit()
     conn.close()
 
-'''
-# Written by: Anton
-def GetUsers(HomeName):
-    """Function that returns all users of a specific household"""
-    conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
-    cur = conn.cursor()
-    sql = "SELECT user_id from PERSON join LIVES_IN on PERSON.user_id = LIVES_IN.user_id join HOME on LIVES_IN.home_id = HOME.home_id where home_name = %s;"
-    cur.execute(sql, (HomeName,))
-    Users = cur.fetchall()
-    return Users
-'''
 
-@route("/user-details/<UId>/<SUId>/<Users>/<Chores>/<HomeInfo>")
+@route("/user-details/<UId>/<SUId>")
 def UserDetails(UId, SUId):
     conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
     cur = conn.cursor()
     sql = "SELECT * from PERSON where user_id = %s;"
     cur.execute(sql, (SUId,))
     UserInfo = cur.fetchone()
-    return template("user-details", UserInfo=UserInfo, Chores=GetChores(SUId), HomeInfo=GetHomeInfo(SUId), UId=UId)
+    sql2 = "SELECT * from CHORE join RESPONSIBILITY on CHORE.chore_id = RESPONSIBILITY.chore_id where user_id = %s;"
+    cur.execute(sql2, (SUId,))
+    ChoreInfo = cur.fetchall()
+    HomeInfo = GetHomeInfo(UId)
+    return template("user-details", Users=UserInfos(HomeInfo[1]), ChoreInfo=ChoreInfo, UserInfo=UserInfo, Chores=GetChores(SUId), HomeInfo=HomeInfo, UId=UId)
 
-#Written by: Victor
+
+@route("/edit-user/<UId>/<SUId>")
+def EditUser(UId, SUId):
+    conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
+    cur = conn.cursor()
+    sql = "SELECT * from PERSON where user_id = %s;"
+    cur.execute(sql, (SUId,))
+    User = cur.fetchone()
+    HomeInfo = GetHomeInfo(UId)
+    return template("edit-user", User=User, Users=UserInfos(HomeInfo[1]), Chores=GetChores(SUId), HomeInfo=HomeInfo, UId=UId)
+
+
+@route("/update-user/<UId>/<SUId>", method="POST")
+def UpdateUser(UId, SUId):
+    conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
+    cur = conn.cursor()
+    UpdatedInfo = [getattr(request.forms, "inputUserName4"), 
+                    getattr(request.forms, "inputEmail4"),
+                    getattr(request.forms, "inputAdmin4")]
+    sql = "UPDATE PERSON set user_name = %s, user_email = %s, admin = %s where user_id = %s;"
+    cur.execute(sql, (UpdatedInfo[0], UpdatedInfo[1], UpdatedInfo[2], SUId))
+    conn.commit()
+    conn.close()
+    HomeInfo = GetHomeInfo(UId)
+    return template("admin-page", Users=UserInfos(HomeInfo[1]), Chores=ChoreInfos(HomeInfo[1]), HomeInfo=HomeInfo, UId=UId)
+
+
+@route("/edit-chore/<UId>/<CId>")
+def EditChore(UId, CId):
+    conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
+    cur = conn.cursor()
+    sql = "SELECT * from CHORE where chore_id = %s;"
+    cur.execute(sql, (CId,))
+    Chore = cur.fetchone()
+    HomeInfo = GetHomeInfo(UId)
+    return template("edit-chore", Chore=Chore, Users=UserInfos(HomeInfo[1]), Chores=ChoreInfos(HomeInfo[1]), HomeInfo=HomeInfo, UId=UId)
+
+
+@route("/update-chore/<UId>/<CId>", method="POST")
+def UpdateChore(UId, CId):
+    conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
+    cur = conn.cursor()
+    UpdatedInfo = [getattr(request.forms, "InputNameIssue"), 
+                    getattr(request.forms, "CommentIssue"),
+                    int(getattr(request.forms, "WorthIssue")),
+                    getattr(request.forms, "UserIssue")]
+    sql = "UPDATE CHORE set chore_name = %s, chore_description = %s, chore_worth = %s where chore_id = %s;"
+    cur.execute(sql, (UpdatedInfo[0], UpdatedInfo[1], UpdatedInfo[2], CId))
+    sql2 = "UPDATE RESPONSIBILITY set user_id = %s where chore_id = %s;"
+    cur.execute(sql2, (UpdatedInfo[3], CId))
+    conn.commit()
+    conn.close()
+    HomeInfo = GetHomeInfo(UId)
+    return template("admin-page", Users=UserInfos(HomeInfo[1]), Chores=ChoreInfos(HomeInfo[1]), HomeInfo=HomeInfo, UId=UId)
+
+
 @route("/show-issues/<UId>")
 def ShowIssues(UId):
     UsersChores = GetChores(UId)
     return template("show-issues", Chores=UsersChores, UId=UId)
 
 
-# Written by: Niklas & Victor
 def issue_reg(UserInfo):
     """Function that adds the issue to the database"""
     conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
@@ -173,7 +223,6 @@ def issue_reg(UserInfo):
     conn.close()
 
 
-# Written by: Anton
 def home_reg(UserEmail, HomeName):
     """Function that adds the Home to the database"""
     conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
@@ -194,9 +243,8 @@ def home_reg(UserEmail, HomeName):
     conn.close()
 
 
-# Written by: Anton
-@route("/user-registration/<UId>", method="POST")
-def capture_registration(UId):
+@route("/user-registration", method="POST")
+def capture_registration():
     """Function that retrieves the data from the registration form"""
     userInfo = [getattr(request.forms, "inputUserName4"), 
                 getattr(request.forms, "inputEmail4"),
@@ -207,8 +255,9 @@ def capture_registration(UId):
     home_reg(userInfo[1], userInfo[4])
     return template("successful-registration")
     
-@route("/subuser-registration/<UId>/<Users>/<Chores>/<HomeInfo>", method="POST")
-def CaptureSubuserRegistration(UId, Users, Chores, HomeInfo):
+
+@route("/subuser-registration/<UId>", method="POST")
+def CaptureSubuserRegistration(UId):
     """Function that retrieves the data from the registration form"""
     userInfo = [getattr(request.forms, "inputUserName4"), 
                 getattr(request.forms, "inputEmail4"),
@@ -216,7 +265,9 @@ def CaptureSubuserRegistration(UId, Users, Chores, HomeInfo):
                 getattr(request.forms, "inputAdmin4")]
     user_reg(userInfo)
     RegLivesIn(userInfo[1], UId)
-    return template("admin-page", UId=UId, Users=Users, Chores=Chores, HomeInfo=HomeInfo)
+    HomeInfo = GetHomeInfo(UId)
+    return template("admin-page", UId=UId, Users=UserInfos(HomeInfo[1]), Chores=ChoreInfos(HomeInfo[1]), HomeInfo=HomeInfo)
+
 
 def RegLivesIn(UserEmail, UId):
     conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
@@ -234,25 +285,24 @@ def RegLivesIn(UserEmail, UId):
     conn.close()
 
 
-#ISSUES NEEDS TO BE COLLECTED AND ADDED FOR A SPECIFIC HOUSEHOLD !
-# Written by: Niklas & Victor & Gustaf
-@route("/choreReg/<UId>/<Users>/<Chores>/<HomeInfo>", method="POST")
-def capture_issue(UId, Users, Chores, HomeInfo):
+@route("/choreReg/<UId>", method="POST")
+def capture_issue(UId):
     """Function that retrieves the data from the create-issue form"""
     issueInfo = [getattr(request.forms, "InputNameIssue"),
                 getattr(request.forms, "CommentIssue"),
                 int(getattr(request.forms, "WorthIssue")),
                 getattr(request.forms, "UserIssue")]
     issue_reg(issueInfo)
-    return template("admin-page", UId=UId, Users=Users, Chores=Chores, HomeInfo=HomeInfo)
+    HomeInfo = GetHomeInfo(UId)
+    return template("admin-page", UId=UId, Users=UserInfos(HomeInfo[1]), Chores=ChoreInfos(HomeInfo[1]), HomeInfo=HomeInfo)
 
-#Written by: Victor and Niklas
+
 @route("/bank/<UId>")
 def ShowBank(UId):
     UsersPoints = GetBank(UId)
     return template("bank", points=UsersPoints, UId=UId)
 
-#Written by: Victor and Niklas
+
 def GetBank(UserId):
     """Returns the users account balance"""
     conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
@@ -262,9 +312,9 @@ def GetBank(UserId):
     Points = cur.fetchone()
     return Points
 
-# Written by: Niklas & Victor
-@route("/create-issue/<UId>/<Users>/<Chores>/<HomeInfo>")
-def create_issue(UId, Users, Chores, HomeInfo):
+
+@route("/create-issue/<UId>")
+def create_issue(UId):
     """Displays the create issue page"""
     conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
     cur = conn.cursor()
@@ -274,10 +324,10 @@ def create_issue(UId, Users, Chores, HomeInfo):
     Sql2 = """SELECT user_name, PERSON.user_id from PERSON join LIVES_IN on PERSON.user_id = LIVES_IN.user_id where home_id = %s"""
     cur.execute(Sql2, (HomeId,))
     HomesUsers = cur.fetchall()
-    return template("create-issue", HomesUsers=HomesUsers, UId=UId, Users=Users, Chores=Chores, HomeInfo=HomeInfo)
+    HomeInfo = GetHomeInfo(UId)
+    return template("create-issue", HomesUsers=HomesUsers, UId=UId, Users=UserInfos(HomeInfo[1]), Chores=ChoreInfos(HomeInfo[1]), HomeInfo=HomeInfo)
 
 
-# Written by: Victor
 def GetChores(UserId):
     """Function that returns all CHORES from a specific PERSON"""
     conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
@@ -288,7 +338,7 @@ def GetChores(UserId):
     return GetAllChores
 
 
-# Written by: Victor
+
 def get_specific_issue(issue_id):
     """Function that returns all info about the CHORES/Issues"""
     conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
@@ -299,31 +349,7 @@ def get_specific_issue(issue_id):
     return get_issue_description
 
 
-'''
-# Written by: Victor
-def find_issue(issue_id):
-    "hämtar alla artiklar, om artikel = id då har man hittat rätt artikel"
-    issues = get_issue()
-    found_issue = None
-    for i in range(len(issues)):
-      id, name, category, value, description, date = issues[i]
-      if id == issue_id:
-        found_issue = id
-    return found_issue
-
-# Written by: Victor
-@route("/Chore/<ChoreId>")
-def Chore(ChoreId):
-    """Function that checks if an issue contains info and redirects to different routes."""
-    FoudChore = GetChore(ChoreId)
-    for Info in found_issue:
-      if Info == None:
-          return template("admin-page")
-      else:
-          return template("edit-issue", { "Info": Info })
-'''
-
-@error(404)
+'''@error(404)
 def error404(error):
     """Returns the error template"""
     return template("error")
@@ -332,7 +358,7 @@ def error404(error):
 @error(405)
 def error405(error):
     """Returns the error template"""
-    return template("error")
+    return template("error")'''
 
 
 @route("/static/css/<filename:path>")
@@ -351,6 +377,7 @@ def static_js(filename):
 def static_images(filename):
     """Returns the static files, style and js files."""
     return static_file(filename, root="static/images")
+
 
 run(host='localhost', port=8090, debug=True)
 

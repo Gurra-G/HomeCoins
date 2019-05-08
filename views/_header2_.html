@@ -2,17 +2,19 @@
 <html lang=sv>
 
 <head>
-  <title>Dashboard ·HomeCoins</title>
+  <title>HomeCoins</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="/static/style.css" type="text/css" rel="stylesheet">
   <link href="/static/reset.css" type="text/css" rel="stylesheet">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
   <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/pricing/">
+  <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
   <!-- Bootstrap core CSS -->
   <link href="../../dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/static/css/burger2.css">
   <link rel="stylesheet" href="/static/css/multislider.css">
+  <link rel="stylesheet" href="/static/css/header2.css">
 </head>
 
 <body>
@@ -26,9 +28,9 @@
     <nav class="nav">
       <ul>
         <h4>Meny</h4>
-          <li><a href="#">Inaktiv länk</a></li>
-          <li><a href="/add-subuser/{{UId}}/{{Users}}/{{Chores}}/{{HomeInfo}}">Lägg till användare</a></li>
-          <li><a href="/create-issue/{{UId}}/{{Users}}/{{Chores}}/{{HomeInfo}}">Lägg till ny syssla</a></li>
+          <li><a href="/go-home/{{UId}}">Mitt hem</a></li>
+          <li><a href="/add-subuser/{{UId}}">Lägg till användare</a></li>
+          <li><a href="/create-issue/{{UId}}">Lägg till ny syssla</a></li>
           <li id="LogOutButton"><a href="/">Logga ut</a></li>
         </ul>
 
@@ -59,6 +61,3 @@
   <div id="container">
 
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
-      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">Dashboard</h1>
-      </div>

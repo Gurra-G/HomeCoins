@@ -1,9 +1,41 @@
 % include("_header2_.html")
-
-UserInfo
-Chores
-HomeInfo
-UId
+<div class="media">
+    <img src="/static/images/User_Avatar.png" class="align-self-center mr-3" alt="..." style="height: 100px; width: 100px;">
+    <div class="media-body">
+        <h5 class="mt-0">Namn: {{UserInfo[1]}}</h5>
+        <p>Email: {{UserInfo[2]}}</p>
+        <p class="mb-0">Förälder: {{UserInfo[3]}}</p>
+    </div>
+</div>
+<hr>
+<h4>{{UserInfo[1]}}s Sysslor:</h4>
+<div class="row">
+  % for Chore in ChoreInfo:
+  <div class="col-md-4">
+    <div class="card mb-4 shadow-sm">
+      <svg class="bd-placeholder-img card-img-top" width="100%" height="225" 
+        xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" 
+        focusable="false" role="img" aria-label="Placeholder: Thumbnail">
+          <title>{{Chore[1]}}</title>
+          <rect width="100%" height="100%" fill="#55595c"></rect>
+          <text x="50%" y="50%" fill="#eceeef" dy=".3em">{{Chore[1]}}</text>
+      </svg>
+      <div class="card-body">
+        <p class="card-text">{{Chore[2]}}</p>
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="btn-group">
+            <a href="/edit-chore/{{UId}}/{{Chore[0]}}">
+              <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+            </a>
+          </div>
+          <small class="text-muted">{{Chore[3]}} :-</small>
+        </div>
+      </div>
+    </div>
+  </div>
+  % end
+</div>
+<hr>
 
 
 % include("_footer2_.html")
