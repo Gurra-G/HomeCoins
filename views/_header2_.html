@@ -17,35 +17,37 @@
 <body>
   <header id="head">
     <div class="nav-toggle">
-      <div class="nav-toggle-bar"></div>
+      <div class="nav-toggle-bar">
+        
+      </div>
+      
     </div>
     <nav class="nav">
       <ul>
-        <h4>Dashboard</h4>
-          <li><a href="/bank/{{UId}}">Bank</a></li>
-          <li><a href="/show-users/{{UId}}">Visa användare</a></li>
+        <h4>Meny</h4>
+          <li><a href="/show-users/{{UId}}">Min Profil</a></li>
           <li><a href="/add-subuser/{{UId}}">Lägg till användare</a></li>
-          <li><a href="#">Statistik 1</a></li>
-          <li><a href="#">Statstik 2</a></li>
+          <li><a href="/create-issue/{{UId}}">Lägg till ny syssla</a></li>
+          <li id="LogOutButton"><a href="/">Logga ut</a></li>
         </ul>
 
         <ul>
-          <h4>Sysslor</h4>
-          <li><a href="#">Visa sysslor</a></li>
-          <li><a href="/create-issue/{{UId}}">Lägg till ny syssla</a></li>
-          <li><a href="#">Tilldela syssla</a></li>
-          <li><a href="/show-issues/{{UId}}">Mina sysslor</a></li>
-          <li><a href="#">Avslutade sysslor</a></li>
-          <li><a href="#">Mina poäng</a></li>
-          <li id="LogOutButton"><a href="#">Logga ut</a></li>
+          <h4>Inaktiva länkar</h4>
+          <li><a href="#">Inaktiv länk</a></li>
+          <li><a href="#">Inaktiv länk</a></li>
+          <li><a href="#">Inaktiv länk</a></li>
+          <li><a href="#">Inaktiv länk</a></li>
+          <li><a href="#">Inaktiv länk</a></li>
+          <li><a href="#">Inaktiv länk</a></li>
+          <li id="LogOutButton"><a href="#">Inaktiv länk</a></li>
         </ul>
       </nav>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <a class="navbar-brand" href="/admin-page/{{UId}}">HomeCoins</a>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
+          <h1>{{HomeInfo[0]}}</h1>
           <li class="nav-item active">
-            <a class="nav-link" href="/">Logga ut</a>
+            <a class="nav-link" href="#"><img src="/static/images/Logotype.png" style="height: 50px; width: 50px;" ></a>
           </li>
         </ul>
       </div>

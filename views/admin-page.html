@@ -1,4 +1,16 @@
 % include("_header2_.html") 
-
-
+<ul>
+% for User in Users:
+    <li>
+        <a href="/user-details/{{UId}}/{{User[0]}}">{{User[1]}}</a>
+    </li>
+% end
+</ul>
+<ul>
+% for Chore in Chores:
+    <li>
+        {{Chore[1]}}
+    </li>
+% end
+</ul>
 % include("_footer2_.html") 

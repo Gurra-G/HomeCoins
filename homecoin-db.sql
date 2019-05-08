@@ -6,6 +6,7 @@ drop table BANK_ACCOUNT cascade;
 drop table PERSON cascade;
 drop table LIVES_IN cascade;
 drop table RESPONSIBILITY cascade;
+drop table DEADLINE cascade;
 
 
 create table PERSON
@@ -56,4 +57,11 @@ create table BANK_ACCOUNT
     user_id                         int not null,
     account_balance                 int not null,
     foreign key(user_id)            references PERSON(user_id)
+);
+
+create table DEADLINE
+(
+    chore_id                        int not null,
+    deadline                        int not null,
+    foreign key(chore_id)           references CHORE(chore_id)
 );

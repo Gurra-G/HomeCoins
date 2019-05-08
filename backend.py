@@ -34,8 +34,6 @@ def GetTheUser(UserEmail):
     sql = """SELECT user_id, admin, user_email, user_password FROM PERSON where user_email = %s;"""
     cur.execute(sql, (UserEmail,))
     User = cur.fetchone()
-    conn.close()
-    print(User)
     return User
 
 
@@ -47,21 +45,39 @@ def LoginCheck():
     LoginInfo = [getattr(request.forms, "InputUserEmail1"), 
                  getattr(request.forms, "InputPassword1")]
     User = GetTheUser(LoginInfo[0])
-    print(User)
     errorFlash = LoginError()
     UserId = User[0] 
-    print(UserId)
     Admin = User[1] 
     UserEmail = User[2] 
     UserPassword = User[3]
     if LoginInfo[0] == UserEmail and pbkdf2_sha256.verify(LoginInfo[1], UserPassword) is True:
-      if Admin == True:
-          return template("admin-page", UId = UserId)
-      elif Admin == False:
-          return template("user-page", UId = UserId)
+        if Admin == True:
+            HomeInfo = GetHomeInfo(UserId)
+            ChoreInfo = ChoreInfos(HomeInfo[1])
+            UserInfo = UserInfos(HomeInfo[1])
+            return template("admin-page", HomeInfo=HomeInfo, Chores=ChoreInfo, Users=UserInfo, UId=UserId)
+        elif Admin == False:
+            return template("user-page", UId = UserId)
     else:
         return template("login-page"), errorFlash
 
+
+def ChoreInfos(HomeId):
+    conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
+    cur = conn.cursor()
+    sql = "SELECT CHORE.chore_id, CHORE.chore_name, CHORE.chore_description, CHORE.chore_worth, RESPONSIBILITY.user_id, user_name from CHORE join RESPONSIBILITY on CHORE.chore_id = RESPONSIBILITY.chore_id join PERSON on RESPONSIBILITY.user_id = PERSON.user_id join LIVES_IN on PERSON.user_id = LIVES_IN.user_id where home_id = %s"
+    cur.execute(sql, (HomeId,))
+    Chores = cur.fetchall()
+    return Chores
+
+
+def UserInfos(HomeId):
+    conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
+    cur = conn.cursor()
+    sql = "SELECT PERSON.user_id, PERSON.user_name, PERSON.user_email, PERSON.admin, BANK_ACCOUNT.account_balance from PERSON join BANK_ACCOUNT on PERSON.user_id = BANK_ACCOUNT.user_id join LIVES_IN on PERSON.user_id = LIVES_IN.user_id where home_id = %s"
+    cur.execute(sql, (HomeId,))
+    UserInfo = cur.fetchall()
+    return UserInfo
 
 @route("/login-page")
 def Login():
@@ -75,12 +91,12 @@ def Register():
     return template("register-page")
 
 
-def GetHomeName(UserId):
-    """Function that gets the adress and home name of the admin logged in"""
+def GetHomeInfo(UId):
+    """Function that gets the home name of the user"""
     conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
     cur = conn.cursor()
-    sql = "SELECT home_name from PERSON join LIVES_IN on PERSON.user_id = LIVES_IN.user_id join HOME on LIVES_IN.home_id = HOME.home_id where PERSON.user_id = %s;"
-    cur.execute(sql, (UserId,))
+    sql = "SELECT home_name, LIVES_IN.home_id from LIVES_IN join HOME on LIVES_IN.home_id = HOME.home_id where LIVES_IN.user_id = %s;"
+    cur.execute(sql, (UId,))
     HomeName = cur.fetchone()
     return HomeName
 
@@ -88,9 +104,7 @@ def GetHomeName(UserId):
 @route("/add-subuser/<UId>")
 def RegisterSubUser(UId):
     """Displays the register page"""
-    HomeInfo = GetHomeName(UId)
-    print(HomeInfo)
-    return template("register-subuser-page", HomeName=HomeInfo, UId=UId)
+    return template("register-subuser-page", HomeInfo=GetHomeInfo(UId), UId=UId)
 
 
 # Written by: Anton
@@ -103,30 +117,31 @@ def user_reg(userInfo):
     conn.commit()
     conn.close()
 
-
-# Written by: Anton
-@route("/show-users/<UId>")
-def ShowUsers(UId):
-    HomeName = GetHomeName(UId)
-    return template("show-users", Users=GetUsers(HomeName), UId=UId)
-
-
+'''
 # Written by: Anton
 def GetUsers(HomeName):
     """Function that returns all users of a specific household"""
     conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
     cur = conn.cursor()
-    sql = "SELECT user_name from PERSON join LIVES_IN on PERSON.user_id = LIVES_IN.user_id join HOME on LIVES_IN.home_id = HOME.home_id where home_name = %s;"
+    sql = "SELECT user_id from PERSON join LIVES_IN on PERSON.user_id = LIVES_IN.user_id join HOME on LIVES_IN.home_id = HOME.home_id where home_name = %s;"
     cur.execute(sql, (HomeName,))
     Users = cur.fetchall()
     return Users
+'''
 
+@route("/user-details/<UId>/<User>")
+def UserDetails(UId, User):
+    conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
+    cur = conn.cursor()
+    sql = "SELECT * from PERSON where user_id = %s;"
+    cur.execute(sql, (User,))
+    UserInfo = cur.fetchone()
+    return template("user-details", UserInfo=UserInfo, Chores=GetChores(User), HomeInfo=GetHomeInfo(User), UId=UId)
 
 #Written by: Victor
 @route("/show-issues/<UId>")
 def ShowIssues(UId):
     UsersChores = GetChores(UId)
-    print(UsersChores)
     return template("show-issues", Chores=UsersChores, UId=UId)
 
 
@@ -141,7 +156,6 @@ def issue_reg(UserInfo):
     Sql = """INSERT into CHORE(chore_name, chore_description, chore_worth) values(%s, %s, %s);"""
     cur.execute(Sql, (Name, Descript, Worth))
     Sql2 = """SELECT chore_id FROM CHORE order by chore_id DESC limit 1"""
-    print (Sql2)
     cur.execute(Sql2)
     ChoreInfo = cur.fetchone()
     ChoreId = ChoreInfo[0]
@@ -206,8 +220,8 @@ def RegLivesIn(UserEmail, UId):
     cur.execute(Sql2, (UserEmail,))
     UserInfo = cur.fetchone()
     SUId = UserInfo[0]
-    Sql4 = """INSERT into LIVES_IN(home_id, user_id) values(%s, %s)"""
-    cur.execute(Sql4, (HomeId, SUId))
+    Sql3 = """INSERT into LIVES_IN(home_id, user_id) values(%s, %s)"""
+    cur.execute(Sql3, (HomeId, SUId))
     conn.commit()
     conn.close()
 
@@ -219,7 +233,7 @@ def capture_issue(UId):
     """Function that retrieves the data from the create-issue form"""
     issueInfo = [getattr(request.forms, "InputNameIssue"),
                 getattr(request.forms, "CommentIssue"),
-                getattr(request.forms, "WorthIssue"),
+                int(getattr(request.forms, "WorthIssue")),
                 getattr(request.forms, "UserIssue")]
     issue_reg(issueInfo)
     return template("admin-page", UId=UId)
@@ -232,12 +246,12 @@ def ShowBank(UId):
 
 #Written by: Victor and Niklas
 def GetBank(UserId):
-    """"""
+    """Returns the users account balance"""
     conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
     cur = conn.cursor()
     sql = "SELECT account_balance from BANK_ACCOUNT where user_id = %s;"
     cur.execute(sql, (UserId,))
-    Points = cur.fetchall()
+    Points = cur.fetchone()
     return Points
 
 # Written by: Niklas & Victor
