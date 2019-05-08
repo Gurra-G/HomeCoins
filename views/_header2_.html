@@ -12,6 +12,7 @@
   <!-- Bootstrap core CSS -->
   <link href="../../dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/static/css/burger2.css">
+  <link rel="stylesheet" href="/static/css/multislider.css">
 </head>
 
 <body>
@@ -25,9 +26,9 @@
     <nav class="nav">
       <ul>
         <h4>Meny</h4>
-          <li><a href="/show-users/{{UId}}">Min Profil</a></li>
-          <li><a href="/add-subuser/{{UId}}">Lägg till användare</a></li>
-          <li><a href="/create-issue/{{UId}}">Lägg till ny syssla</a></li>
+          <li><a href="#">Inaktiv länk</a></li>
+          <li><a href="/add-subuser/{{UId}}/{{Users}}/{{Chores}}/{{HomeInfo}}">Lägg till användare</a></li>
+          <li><a href="/create-issue/{{UId}}/{{Users}}/{{Chores}}/{{HomeInfo}}">Lägg till ny syssla</a></li>
           <li id="LogOutButton"><a href="/">Logga ut</a></li>
         </ul>
 

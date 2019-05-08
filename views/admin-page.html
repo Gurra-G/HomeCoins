@@ -1,16 +1,47 @@
 % include("_header2_.html") 
-<ul>
-% for User in Users:
-    <li>
-        <a href="/user-details/{{UId}}/{{User[0]}}">{{User[1]}}</a>
-    </li>
-% end
-</ul>
-<ul>
-% for Chore in Chores:
-    <li>
-        {{Chore[1]}}
-    </li>
-% end
-</ul>
+<div id="mSlider" class="Slider">
+    <ul class="MsContent">
+    % for User in Users:
+        <li class="item">
+            <a href="/user-details/{{UId}}/{{User[0]}}/{{Users}}/{{Chores}}/{{HomeInfo}}">{{User[1]}}</a>
+        </li>
+    % end
+    </ul>
+</div>
+<div id="mSlider" class="Slider">
+    <ul class="MsContent">
+    % for Chore in Chores:
+        <li class="item">
+            {{Chore[1]}}
+        </li>
+    % end
+    </ul>
+</div>
+<div class="pagination"></div>
+
+<div class="container">
+        <h1>Slider</h1>
+            <div class="slider center">       
+                <div class="slide">
+                  <div class="cl cl-yellow"></div>
+                </div>
+                <div class="slide">
+                  <div class="cl cl-blue"></div>
+                </div>
+                <div class="slide">
+                  <div class="cl cl-red"></div>
+                </div>
+              <div class="slide">
+                  <div class="cl cl-yellow"></div>
+                </div>
+                <div class="slide">
+                  <div class="cl cl-blue"></div>
+                </div>
+                <div class="slide">
+                  <div class="cl cl-red"></div>
+                </div>
+                
+            </div>
+            <div class="pagination"></div>
+      </div>
 % include("_footer2_.html") 
