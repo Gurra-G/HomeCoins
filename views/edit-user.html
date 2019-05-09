@@ -1,5 +1,5 @@
 % include("_header2_.html")
-        <h3>Registrera användare nedan:</h3>
+        <h3>Ändra uppgifter för användare nedan:</h3>
         <form action="/update-user/{{UId}}/{{User[0]}}" method="post">
           <input type="hidden" id="userRole" name="userRole" value="2">
             <div class="form-group col-md-3">
@@ -11,9 +11,13 @@
               <input type="email" class="form-control" name="inputEmail4" id="inputEmail4" value="{{User[2]}}" required>
             </div>
             <div class="form-group col-md-3">
-              <input type="radio" id="inputAdmin4" value="true" name="inputAdmin4">Förälder<br>
+              <input type="radio" id="inputAdmin4" value="true" name="inputAdmin4" checked>Förälder<br>
               <input type="radio" id="inputAdmin4" value="false" name="inputAdmin4">Barn<br>
+              <p id="parenterror">Det måste finnas minst en förälder i varje hem!</p>
             </div>
           <button type="submit" class="btn btn-primary">Spara</button>
         </form>
+        <style>#parenterror {
+            display: none;
+          }</style>
 % include("_footer2_.html")

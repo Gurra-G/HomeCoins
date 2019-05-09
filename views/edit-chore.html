@@ -15,15 +15,15 @@
             </div>
             <div class="form-row">
                 <div class="form-group col-md-3">
-                    <label for="WorthIssue">Sysslans värde</label>
+                    <label for="WorthIssue">Sysslans värde i <img src="/static/images/Logotype.png" style="height: 20px; width: 20px;" ></label>
                     <input class="form-control" name="WorthIssue" id="WorthIssue" type="" value="{{Chore[3]}}" required>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-3">
-                    <label for="UserIssue">Tilldela Syssla</label>
+                    <label for="UserIssue">Tilldela Syssla till ny användare</label>
                     <select name="UserIssue" class="custom-select" id="inputGroupSelect01">
-                        <option selected>välj användare...</option>
+                        <option value="{{Chore[5]}}" selected>{{Chore[4]}}</option>
                         % for User in Users:
                         <option value="{{User[0]}}">{{User[1]}}</option>
                         % end

@@ -18,11 +18,19 @@ def index():
     return template("index")
 
 
-def LoginError():
+def ErrorMessage():
     """Function for flashing the error for login route"""
-    with open('flash.txt', 'r') as file:
+    flashes = []
+    with open('emailerror.txt', 'r') as file:
       Flash = file.read().replace('\n', '')
-    return Flash
+    with open('passworderror.txt', 'r') as file:
+      Flash2 = file.read().replace('\n', '')
+    with open('oneadulterror.txt', 'r') as file:
+      Flash3 = file.read().replace('\n', '')
+    flashes.append(Flash)
+    flashes.append(Flash2)
+    flashes.append(Flash3)
+    return flashes
 
 
 def GetTheUser(UserEmail):
@@ -41,21 +49,24 @@ def LoginCheck():
     LoginInfo = [getattr(request.forms, "InputUserEmail1"), 
                  getattr(request.forms, "InputPassword1")]
     User = GetTheUser(LoginInfo[0])
-    errorFlash = LoginError()
-    UserId = User[0] 
-    Admin = User[1] 
-    UserEmail = User[2] 
-    UserPassword = User[3]
-    if LoginInfo[0] == UserEmail and pbkdf2_sha256.verify(LoginInfo[1], UserPassword) is True:
-        if Admin == True:
-            HomeInfo = GetHomeInfo(UserId)
-            ChoreInfo = ChoreInfos(HomeInfo[1])
-            UserInfo = UserInfos(HomeInfo[1])
-            return template("admin-page", HomeInfo=HomeInfo, Chores=ChoreInfo, Users=UserInfo, UId=UserId)
-        elif Admin == False:
-            return template("user-page", UId = UserId)
+    errorFlash = ErrorMessage()
+    if User is not None:
+        UserId = User[0] 
+        Admin = User[1] 
+        UserEmail = User[2] 
+        UserPassword = User[3]
+        if LoginInfo[0] == UserEmail and pbkdf2_sha256.verify(LoginInfo[1], UserPassword) is True:
+            if Admin == True:
+                HomeInfo = GetHomeInfo(UserId)
+                ChoreInfo = ChoreInfos(HomeInfo[1])
+                UserInfo = UserInfos(HomeInfo[1])
+                return template("admin-page", HomeInfo=HomeInfo, Chores=ChoreInfo, Users=UserInfo, UId=UserId)
+            elif Admin == False:
+                return template("user-page", UId = UserId)
+        else:
+            return template("login-page"), errorFlash[1]
     else:
-        return template("login-page"), errorFlash
+        return template("login-page"), errorFlash[0]
 
 
 def ChoreInfos(HomeId):
@@ -156,24 +167,45 @@ def EditUser(UId, SUId):
 
 @route("/update-user/<UId>/<SUId>", method="POST")
 def UpdateUser(UId, SUId):
+    oneAdulterror = ErrorMessage()
     conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
     cur = conn.cursor()
+    sql = "SELECT * from PERSON where user_id = %s;"
+    cur.execute(sql, (SUId,))
+    User = cur.fetchone()
     UpdatedInfo = [getattr(request.forms, "inputUserName4"), 
                     getattr(request.forms, "inputEmail4"),
                     getattr(request.forms, "inputAdmin4")]
-    sql = "UPDATE PERSON set user_name = %s, user_email = %s, admin = %s where user_id = %s;"
-    cur.execute(sql, (UpdatedInfo[0], UpdatedInfo[1], UpdatedInfo[2], SUId))
-    conn.commit()
-    conn.close()
     HomeInfo = GetHomeInfo(UId)
-    return template("admin-page", Users=UserInfos(HomeInfo[1]), Chores=ChoreInfos(HomeInfo[1]), HomeInfo=HomeInfo, UId=UId)
+    Adults = OneAdultNeeded(HomeInfo[1])
+    if len(Adults) <= 1:
+        return template("edit-user", User=User, Users=UserInfos(HomeInfo[1]), Chores=GetChores(SUId), HomeInfo=HomeInfo, UId=UId), oneAdulterror[2]
+    else:
+        sql = "UPDATE PERSON set user_name = %s, user_email = %s, admin = %s where user_id = %s;"
+        cur.execute(sql, (UpdatedInfo[0], UpdatedInfo[1], UpdatedInfo[2], SUId))
+        conn.commit()
+        conn.close()
+        return template("admin-page", Users=UserInfos(HomeInfo[1]), Chores=ChoreInfos(HomeInfo[1]), HomeInfo=HomeInfo, UId=UId)
+
+
+def OneAdultNeeded(HId):
+    conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
+    cur = conn.cursor()
+    sql = """Select admin from PERSON join LIVES_IN on PERSON.user_id = LIVES_IN.user_id
+             where home_id = %s and admin = true"""
+    cur.execute(sql, (HId,))
+    NumOfAdults = cur.fetchall()
+    return NumOfAdults
 
 
 @route("/edit-chore/<UId>/<CId>")
 def EditChore(UId, CId):
     conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
     cur = conn.cursor()
-    sql = "SELECT * from CHORE where chore_id = %s;"
+    sql = """SELECT CHORE.chore_id, CHORE.chore_name, CHORE.chore_description,
+    CHORE.chore_worth, PERSON.user_name, PERSON.user_id from CHORE join RESPONSIBILITY on CHORE.chore_id = 
+    RESPONSIBILITY.chore_id join PERSON on PERSON.user_id = 
+    RESPONSIBILITY.user_id where CHORE.chore_id = %s;"""
     cur.execute(sql, (CId,))
     Chore = cur.fetchone()
     HomeInfo = GetHomeInfo(UId)
@@ -246,27 +278,38 @@ def home_reg(UserEmail, HomeName):
 @route("/user-registration", method="POST")
 def capture_registration():
     """Function that retrieves the data from the registration form"""
+    errorFlash = ErrorMessage()
     userInfo = [getattr(request.forms, "inputUserName4"), 
-                getattr(request.forms, "inputEmail4"),
+                getattr(request.forms, "InputUserEmail1"),
                 pbkdf2_sha256.hash(getattr(request.forms, "inputPassword4")),
                 getattr(request.forms, "inputAdmin4"),
                 getattr(request.forms, "inputHomeName4")]
-    user_reg(userInfo)
-    home_reg(userInfo[1], userInfo[4])
-    return template("successful-registration")
+    UserExists = GetTheUser(userInfo[1])
+    if UserExists is not None:
+        return template("register-page"), errorFlash[0]
+    else:
+        user_reg(userInfo)
+        home_reg(userInfo[1], userInfo[4])
+        return template("successful-registration")
     
 
 @route("/subuser-registration/<UId>", method="POST")
 def CaptureSubuserRegistration(UId):
     """Function that retrieves the data from the registration form"""
+    errorFlash = ErrorMessage()
     userInfo = [getattr(request.forms, "inputUserName4"), 
-                getattr(request.forms, "inputEmail4"),
+                getattr(request.forms, "InputUserEmail1"),
                 pbkdf2_sha256.hash(getattr(request.forms, "inputPassword4")),
                 getattr(request.forms, "inputAdmin4")]
-    user_reg(userInfo)
-    RegLivesIn(userInfo[1], UId)
-    HomeInfo = GetHomeInfo(UId)
-    return template("admin-page", UId=UId, Users=UserInfos(HomeInfo[1]), Chores=ChoreInfos(HomeInfo[1]), HomeInfo=HomeInfo)
+    UserExists = GetTheUser(userInfo[1])
+    if UserExists is not None:
+        HomeInfo = GetHomeInfo(UId)
+        return template("register-subuser-page", UId=UId, Users=UserInfos(HomeInfo[1]), Chores=ChoreInfos(HomeInfo[1]), HomeInfo=HomeInfo), errorFlash[0]
+    else:
+        user_reg(userInfo)
+        RegLivesIn(userInfo[1], UId)
+        HomeInfo = GetHomeInfo(UId)
+        return template("admin-page", UId=UId, Users=UserInfos(HomeInfo[1]), Chores=ChoreInfos(HomeInfo[1]), HomeInfo=HomeInfo)
 
 
 def RegLivesIn(UserEmail, UId):
