@@ -7,11 +7,27 @@
     user-select: none;
   }
 
-header {
+.header {
   position: fixed;
   top: 0;
+  
 }
 
+#navbarSupportedContent {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.navbar {
+  background: -webkit-linear-gradient(to top right, #7E0F4B, #1A5865);
+  background: linear-gradient(to top right, #7E0F4B, #1A5865);
+  box-shadow: 0 0 5px #000;
+}
+
+.nav {
+  background: #000;
+}
 
 
 /* Extra small devices (phones, 600px and down) */

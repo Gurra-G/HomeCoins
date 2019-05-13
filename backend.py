@@ -238,7 +238,7 @@ def issue_reg(UserInfo):
     Name = UserInfo[0]
     Descript = UserInfo[1]
     Worth = UserInfo[2]
-    Deadline = Userinfo[4]
+    Deadline = UserInfo[4]
     Sql = """INSERT into CHORE(chore_name, chore_description) values(%s, %s);"""
     cur.execute(Sql, (Name, Descript))
     Sql2 = """SELECT chore_id FROM CHORE order by chore_id DESC limit 1"""
