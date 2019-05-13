@@ -72,7 +72,7 @@ def LoginCheck():
 def ChoreInfos(HomeId):
     conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
     cur = conn.cursor()
-    sql = "SELECT CHORE.chore_id, CHORE.chore_name, CHORE.chore_description, CHORE.chore_worth, RESPONSIBILITY.user_id, user_name from CHORE join RESPONSIBILITY on CHORE.chore_id = RESPONSIBILITY.chore_id join PERSON on RESPONSIBILITY.user_id = PERSON.user_id join LIVES_IN on PERSON.user_id = LIVES_IN.user_id where home_id = %s"
+    sql = "SELECT CHORE.chore_id, CHORE.chore_name, CHORE.chore_description, RESPONSIBILITY.chore_worth, RESPONSIBILITY.user_id, user_name from CHORE join RESPONSIBILITY on CHORE.chore_id = RESPONSIBILITY.chore_id join PERSON on RESPONSIBILITY.user_id = PERSON.user_id join LIVES_IN on PERSON.user_id = LIVES_IN.user_id where home_id = %s"
     cur.execute(sql, (HomeId,))
     Chores = cur.fetchall()
     return Chores
@@ -81,7 +81,7 @@ def ChoreInfos(HomeId):
 def UserInfos(HomeId):
     conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
     cur = conn.cursor()
-    sql = "SELECT PERSON.user_id, PERSON.user_name, PERSON.user_email, PERSON.admin, BANK_ACCOUNT.account_balance from PERSON join BANK_ACCOUNT on PERSON.user_id = BANK_ACCOUNT.user_id join LIVES_IN on PERSON.user_id = LIVES_IN.user_id where home_id = %s"
+    sql = "SELECT PERSON.user_id, PERSON.user_name, PERSON.user_email, PERSON.admin from PERSON join LIVES_IN on PERSON.user_id = LIVES_IN.user_id where home_id = %s"
     cur.execute(sql, (HomeId,))
     UserInfo = cur.fetchall()
     return UserInfo
@@ -130,12 +130,6 @@ def user_reg(userInfo):
     cur = conn.cursor()
     Sql = "INSERT into PERSON(user_name, user_email, admin, user_password) values(%s, %s, %s, %s);"
     cur.execute(Sql, (userInfo[0], userInfo[1], userInfo[3], userInfo[2]))
-    Sql2 = "Select user_id from PERSON where user_email = %s"
-    cur.execute(Sql2, (userInfo[1],))
-    UserId = cur.fetchone()
-    Balance = int(0)
-    Sql3 = "INSERT into BANK_ACCOUNT(user_id, account_balance) values(%s, %s)"
-    cur.execute(Sql3, (UserId, Balance))
     conn.commit()
     conn.close()
 
@@ -203,7 +197,7 @@ def EditChore(UId, CId):
     conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
     cur = conn.cursor()
     sql = """SELECT CHORE.chore_id, CHORE.chore_name, CHORE.chore_description,
-    CHORE.chore_worth, PERSON.user_name, PERSON.user_id from CHORE join RESPONSIBILITY on CHORE.chore_id =
+    RESPONSIBILITY.chore_worth, PERSON.user_name, PERSON.user_id, RESPONSIBILITY.deadline, RESPONSIBILITY.completed from CHORE join RESPONSIBILITY on CHORE.chore_id =
     RESPONSIBILITY.chore_id join PERSON on PERSON.user_id =
     RESPONSIBILITY.user_id where CHORE.chore_id = %s;"""
     cur.execute(sql, (CId,))
@@ -219,11 +213,12 @@ def UpdateChore(UId, CId):
     UpdatedInfo = [getattr(request.forms, "InputNameIssue"),
                     getattr(request.forms, "CommentIssue"),
                     int(getattr(request.forms, "WorthIssue")),
-                    getattr(request.forms, "UserIssue")]
-    sql = "UPDATE CHORE set chore_name = %s, chore_description = %s, chore_worth = %s where chore_id = %s;"
-    cur.execute(sql, (UpdatedInfo[0], UpdatedInfo[1], UpdatedInfo[2], CId))
-    sql2 = "UPDATE RESPONSIBILITY set user_id = %s where chore_id = %s;"
-    cur.execute(sql2, (UpdatedInfo[3], CId))
+                    getattr(request.forms, "UserIssue"),
+                    getattr(request.forms, "Deadline")]
+    sql = "UPDATE CHORE set chore_name = %s, chore_description = %s where chore_id = %s;"
+    cur.execute(sql, (UpdatedInfo[0], UpdatedInfo[1], CId))
+    sql2 = "UPDATE RESPONSIBILITY set user_id = %s, chore_worth = %s, deadline = %s where chore_id = %s;"
+    cur.execute(sql2, (UpdatedInfo[3], UpdatedInfo[2], UpdatedInfo[4], CId))
     conn.commit()
     conn.close()
     HomeInfo = GetHomeInfo(UId)
@@ -243,14 +238,15 @@ def issue_reg(UserInfo):
     Name = UserInfo[0]
     Descript = UserInfo[1]
     Worth = UserInfo[2]
-    Sql = """INSERT into CHORE(chore_name, chore_description, chore_worth) values(%s, %s, %s);"""
-    cur.execute(Sql, (Name, Descript, Worth))
+    Deadline = Userinfo[4]
+    Sql = """INSERT into CHORE(chore_name, chore_description) values(%s, %s);"""
+    cur.execute(Sql, (Name, Descript))
     Sql2 = """SELECT chore_id FROM CHORE order by chore_id DESC limit 1"""
     cur.execute(Sql2)
     ChoreInfo = cur.fetchone()
     ChoreId = ChoreInfo[0]
-    Sql3 = """INSERT into RESPONSIBILITY(chore_id, user_id) values(%s, %s)"""
-    cur.execute(Sql3, (ChoreId, UserInfo[3]))
+    Sql3 = """INSERT into RESPONSIBILITY(chore_id, user_id, chore_worth, deadline) values(%s, %s, %s, %s)"""
+    cur.execute(Sql3, (ChoreId, UserInfo[3], Worth, Deadline))
     conn.commit()
     conn.close()
 
@@ -334,12 +330,13 @@ def capture_issue(UId):
     issueInfo = [getattr(request.forms, "InputNameIssue"),
                 getattr(request.forms, "CommentIssue"),
                 int(getattr(request.forms, "WorthIssue")),
-                getattr(request.forms, "UserIssue")]
+                getattr(request.forms, "UserIssue"),
+                getattr(request.forms, "Deadline")]
     issue_reg(issueInfo)
     HomeInfo = GetHomeInfo(UId)
     return template("admin-page", UId=UId, Users=UserInfos(HomeInfo[1]), Chores=ChoreInfos(HomeInfo[1]), HomeInfo=HomeInfo)
 
-
+'''
 @route("/bank/<UId>")
 def ShowBank(UId):
     UsersPoints = GetBank(UId)
@@ -354,7 +351,7 @@ def GetBank(UserId):
     cur.execute(sql, (UserId,))
     Points = cur.fetchone()
     return Points
-
+'''
 
 @route("/create-issue/<UId>")
 def create_issue(UId):
@@ -381,7 +378,7 @@ def GetChores(UserId):
     return GetAllChores
 
 
-
+'''
 def get_specific_issue(issue_id):
     """Function that returns all info about the CHORES/Issues"""
     conn = psycopg2.connect(user=userN, host=hostN, password=passwordN, database=databaseN)
@@ -390,7 +387,7 @@ def get_specific_issue(issue_id):
     cur.execute(sql, (issue_id,))
     get_issue_description = cur.fetchall()
     return get_issue_description
-
+'''
 
 '''@error(404)
 def error404(error):
