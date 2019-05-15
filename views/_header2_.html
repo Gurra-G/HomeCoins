@@ -15,6 +15,8 @@
   <link rel="stylesheet" href="/static/css/burger2.css">
   <link rel="stylesheet" href="/static/css/multislider.css">
   <link rel="stylesheet" href="/static/css/header_two.css">
+  <link rel="stylesheet" href="/static/css/error.css">
+  <link rel="stylesheet" href="/static/css/profile_card.css">
 </head>
 
 <body>
@@ -28,9 +30,9 @@
     <nav class="nav">
       <ul>
         <h4>Meny</h4>
-          <li><a href="/go-home/{{UId}}">Mitt hem</a></li>
-          <li><a href="/add-subuser/{{UId}}">Lägg till användare</a></li>
-          <li><a href="/create-issue/{{UId}}">Lägg till ny syssla</a></li>
+          <li><a href="/go-home/{{UserId}}">Mitt hem</a></li>
+          <li><a href="/add-subuser/{{UserId}}">Lägg till användare</a></li>
+          <li><a href="/create-issue/{{UserId}}">Lägg till ny syssla</a></li>
           <li id="LogOutButton"><a href="/">Logga ut</a></li>
         </ul>
 
@@ -50,7 +52,7 @@
       <div class="" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item active">
-            <a class="nav-link" href="/go-home/{{UId}}"><img src="/static/images/Logotype.png" style="height: 50px; width: 50px;" ></a>
+            <a class="nav-link" href="/go-home/{{UserId}}"><img src="/static/images/Logotype.png" style="height: 50px; width: 50px;" ></a>
           </li>
         </ul>
       </div>

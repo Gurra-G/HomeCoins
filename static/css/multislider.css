@@ -18,7 +18,9 @@ header {
 }
 
 #container {
-    margin-top: 150px;
+    padding-top: 150px;
+    background: -webkit-linear-gradient(to top right, #7E0F4B, #1A5865);
+    background: linear-gradient(to top right, #7E0F4B, #1A5865);
 }
 
 

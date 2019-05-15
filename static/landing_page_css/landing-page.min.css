@@ -20,8 +20,7 @@ header.masthead{
  
  .button {
 	border-radius: 20px;
-	border: 1px solid #1A5865;
-	background-color: #1A5865;	
+	border: 2px solid #fff;	
 	color: #FFFFFF;
 	font-size: 12px;
 	font-weight: bold;
@@ -31,6 +30,8 @@ header.masthead{
   transition: transform 80ms ease-in;
   margin: 5px;
 }
+
+
  
  .testimonials{
      padding-top:7rem;
@@ -64,6 +65,7 @@ header.masthead{
     position: sticky;
     top: 0px;
     z-index: 100;
+    
   }
   
   header video {

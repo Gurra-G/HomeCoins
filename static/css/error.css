@@ -1,0 +1,142 @@
+#suicideerror.error {
+    animation-name: suicideerror;
+    animation-duration: 1s;
+    transition: 0.5s ease;
+}
+@keyframes suicideerror {
+    from {display: none;}
+    to {display: block;}
+}
+#suicideerror.error  {
+    color: #ff0000;
+    display: block;
+    animation-name: suicideerror;
+    animation-duration: 1s;
+    transition: 0.5s ease;
+}
+
+#InputUserEmail1.error {
+	animation-name: InputUserEmail1;
+	animation-duration: 1s;
+	transition: 0.5s ease;
+  }
+  @keyframes InputUserEmail1 {
+	from {background-color: white;}
+	to {background-color: #FF0000;}
+  }
+  #InputUserEmail1.error  {
+	color: #000;
+	background-color: white;
+	border: 3px solid #FF0000;
+	animation-name: InputUserEmail1;
+	animation-duration: 1s;
+	transition: 0.5s ease;
+  }
+  .form-container.error {
+	  animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+	  transform: translate3d(0, 0, 0);
+	  backface-visibility: hidden;
+	  perspective: 1000px;
+	}
+	
+	@keyframes shake {
+	  10%, 90% {
+		transform: translate3d(-1px, 0, 0);
+	  }
+	  
+	  20%, 80% {
+		transform: translate3d(2px, 0, 0);
+	  }
+	
+	  30%, 50%, 70% {
+		transform: translate3d(-4px, 0, 0);
+	  }
+	
+	  40%, 60% {
+		transform: translate3d(4px, 0, 0);
+	  }
+  }
+    
+#InputUserEmail2.errortwo {
+  animation-name: InputUserEmail2;
+  animation-duration: 1s;
+  transition: 0.5s ease;
+  }
+  @keyframes InputUserEmail2 {
+  from {background-color: white;}
+  to {background-color: #FF0000;}
+  }
+  #InputUserEmail2.errortwo  {
+  color: #000;
+  background-color: white;
+  border: 3px solid #FF0000;
+  animation-name: InputUserEmail2;
+  animation-duration: 1s;
+  transition: 0.5s ease;
+  }
+  .form-container.errortwo {
+    animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+  
+  @keyframes shake {
+    10%, 90% {
+    transform: translate3d(-1px, 0, 0);
+    }
+    
+    20%, 80% {
+    transform: translate3d(2px, 0, 0);
+    }
+  
+    30%, 50%, 70% {
+    transform: translate3d(-4px, 0, 0);
+    }
+  
+    40%, 60% {
+    transform: translate3d(4px, 0, 0);
+    }
+    }
+
+#InputPassword1.error {
+    animation-name: InputPassword1;
+    animation-duration: 1s;
+    transition: 0.5s ease;
+    }
+    @keyframes InputPassword1 {
+        from {background-color: white;}
+        to {background-color: #FF0000;}
+    }
+    #InputPassword1.error  {
+        color: #000;
+        background-color: white;
+        border: 3px solid #FF0000;
+        animation-name: InputPassword1;
+        animation-duration: 1s;
+        transition: 0.5s ease;
+    }
+    .form-container.error {
+            animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+            transform: translate3d(0, 0, 0);
+            backface-visibility: hidden;
+            perspective: 1000px;
+        }
+        
+        @keyframes shake {
+            10%, 90% {
+            transform: translate3d(-1px, 0, 0);
+            }
+            
+            20%, 80% {
+            transform: translate3d(2px, 0, 0);
+            }
+        
+            30%, 50%, 70% {
+            transform: translate3d(-4px, 0, 0);
+            }
+        
+            40%, 60% {
+            transform: translate3d(4px, 0, 0);
+            }
+        }

@@ -20,13 +20,21 @@
 }
 
 .navbar {
-  background: -webkit-linear-gradient(to top right, #7E0F4B, #1A5865);
-  background: linear-gradient(to top right, #7E0F4B, #1A5865);
+  background-color: #fff!important;
   box-shadow: 0 0 5px #000;
 }
 
-.nav {
+.nav-toggle {
+  color: #000;
+}
+
+.nav-toggle-bar {
   background: #000;
+}
+
+.nav {
+  background: #fff;
+  color: #000;
 }
 
 

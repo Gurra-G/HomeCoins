@@ -1,9 +1,9 @@
 # coding: utf-8
 # Author: Bust Solutions
 
-userN="username"
-hostN="name of the host"
-passwordN="password for user"
-databaseN="name of the database"
+UserName="username"
+HostName="name of the host"
+Password="password for user"
+Database="name of the database"
 
     
