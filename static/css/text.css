@@ -1,0 +1,27 @@
+body {
+    color: #fff;
+}
+
+
+
+.btn-primary {
+    color: #fff;
+    background-color: transparent;
+    border-color: #fff;
+    border: 2px solid;
+    border-radius: 20px;
+    min-width: 100px;
+}
+
+.btn-primary:hover {
+    background-color: #fff;
+    border: 2px solid #fff;
+    color: #7E0F4B; 
+}
+
+.headlines {
+    text-align: center;
+    font-family: 'Dancing Script', cursive;
+    margin-top: 50px;
+    margin-bottom: 20px; 
+}

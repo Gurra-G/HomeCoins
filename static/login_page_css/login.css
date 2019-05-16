@@ -46,7 +46,7 @@ a {
 
 button {
 	border-radius: 20px;
-	border: 1px solid #1A5865;
+	border: 2px solid #1A5865;
 	background-color: #1A5865;	
 	color: #FFFFFF;
 	font-size: 12px;
@@ -55,7 +55,18 @@ button {
 	letter-spacing: 1px;
 	text-transform: uppercase;
 	transition: transform 80ms ease-in;
+	cursor: pointer;
 }
+
+.btnT:hover {
+	background: #fff;
+	color: #7E0F4B;
+}
+
+.btnT {
+	background: linear-gradient(to top right, #7E0F4B, #1A5865);
+}
+
 
 button:active {
 	transform: scale(0.95);
@@ -68,6 +79,14 @@ button:focus {
 button.ghost {
 	background-color: transparent;
 	border-color: #FFFFFF;
+	cursor: pointer;
+}
+
+button.ghost:hover {
+	background-color: #fff;
+	border-image-source: linear-gradient(to top right, #7E0F4B, #1A5865);
+	border-color: none;
+	color: #7E0F4B;
 }
 
 form {

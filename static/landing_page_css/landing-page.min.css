@@ -29,9 +29,15 @@ header.masthead{
 	text-transform: uppercase;
   transition: transform 80ms ease-in;
   margin: 5px;
+  text-decoration: none;
 }
 
-
+.button:hover {
+  background-color: #fff;
+  border: 2px solid #fff;
+  color: #7E0F4B;
+  text-decoration: none; 
+}
  
  .testimonials{
      padding-top:7rem;

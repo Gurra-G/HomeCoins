@@ -20,23 +20,25 @@
 }
 
 .navbar {
-  background-color: #fff!important;
-  box-shadow: 0 0 5px #000;
+  background-color: transparent!important;
 }
 
-.nav-toggle {
-  color: #000;
+.TheHome {
+  font-family: 'Dancing Script', cursive;
+  display: block;
+  margin-left: auto!important;
+  margin-right: auto!important;
+  margin-top: 10px;
 }
 
-.nav-toggle-bar {
-  background: #000;
-}
 
-.nav {
-  background: #fff;
-  color: #000;
+.mr-auto {
+  right: 2rem;
+  top: 1rem;
+  cursor: pointer;
+  position: fixed;
+  margin-right: 0!important;
 }
-
 
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {

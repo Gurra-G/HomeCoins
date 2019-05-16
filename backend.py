@@ -79,7 +79,8 @@ def RegisterSubUser(UserId):
                                             CompletedChores=GetCompletedChores(HomeInfo[1]), 
                                             Chores=GetChoreInfo(HomeInfo[1]), 
                                             Users=UserInfos(HomeInfo[1]), 
-                                            UserId=UserId)
+                                            UserId=UserId,
+                                            error={"emailError": ""})
 
 
 

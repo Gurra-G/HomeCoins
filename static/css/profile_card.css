@@ -30,3 +30,32 @@
     max-width: 300px;
     min-width: 300px;
 }
+
+.icon {
+    padding: 0 5px 0 5px;
+}
+
+.card-text {
+    color: #000;
+    text-align: center;
+}
+
+.choreIcon {
+    background: transparent;
+    height: 150px;
+    width: 150px;
+}
+
+.iconHolder {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.listinfo {
+    list-style-type: none;
+}
+
+.text-muted {
+    display: inline;
+}
