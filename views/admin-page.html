@@ -19,7 +19,11 @@
                 <img src="/static/images/baseline-delete-24px.svg"/>
               </a>
             </div>
-            <small class="text-muted">Admin: {{User[3]}}</small>
+            % if User[3]:
+              <small class="text-muted">Förälder</small>
+            % else:
+              <small class="text-muted">Barn</small>
+            % end
           </div>
         </div>
       </div>
