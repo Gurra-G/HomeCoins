@@ -4,11 +4,15 @@
     <div class="media-body">
         <h5 class="mt-0">Namn: {{UserInfo[1]}}</h5>
         <p>Email: {{UserInfo[2]}}</p>
-        <p class="mb-0">Förälder: {{UserInfo[3]}}</p>
+        % if UserInfo[3]:
+          <p class="mb-0">Förälder</p>
+        % else:
+          <p class="mb-0">Barn</p>
+        % end
     </div>
 </div>
 <hr>
-<h4>{{UserInfo[1]}}s pågående Sysslor:</h4>
+<h4>Sysslor:</h4>
 <div class="row">
   % for Chore in ChoreInfo:
   <div class="col-md-4">

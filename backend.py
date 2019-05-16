@@ -21,7 +21,7 @@ def Index():
 @route("/user-login", method="POST")
 def LoginCheck():
     """Function that retrieves the data from the login form and checks the credentials against the database"""
-    LoginInfo = [getattr(request.forms, "InputUserEmail1"),
+    LoginInfo = [getattr(request.forms, "InputUserEmail1").lower(),
                  getattr(request.forms, "InputPassword1")]
     User = GetTheUser(LoginInfo[0])
     if User is not None:
@@ -123,7 +123,8 @@ def EditUser(UserId, SubUserId):
                                 Users=UserInfos(HomeInfo[1]), 
                                 Chores=GetChores(SubUserId), 
                                 HomeInfo=HomeInfo, 
-                                UserId=UserId)
+                                UserId=UserId,
+                                error={"emailError": ""})
 
 
 
@@ -135,20 +136,44 @@ def UpdateUser(UserId, SubUserId):
     Sql = "SELECT * from PERSON where user_id = %s;"
     Cur.execute(Sql, (SubUserId,))
     User = Cur.fetchone()
-    UpdatedInfo = [getattr(request.forms, "inputUserName4"),
-                    getattr(request.forms, "inputEmail4"),
+    UpdatedInfo = [getattr(request.forms, "inputUserName4").title(),
+                    getattr(request.forms, "inputEmail4").lower(),
                     getattr(request.forms, "inputAdmin4")]
-    HomeInfo = GetHomeInfo(UserId)
-    Sql2 = "UPDATE PERSON set user_name = %s, user_email = %s, admin = %s where user_id = %s;"
-    Cur.execute(Sql2, (UpdatedInfo[0], UpdatedInfo[1], UpdatedInfo[2], SubUserId))
-    Conn.commit()
-    DataBaseDisconnect()
-    return template("admin-page", Users=UserInfos(HomeInfo[1]), 
-                                CompletedChores=GetCompletedChores(HomeInfo[1]),
-                                Chores=GetChoreInfo(HomeInfo[1]), 
-                                HomeInfo=HomeInfo, 
-                                UserId=UserId,
-                                error={"SuicideError": ""})
+    if User[2] != UpdatedInfo[1]:
+        UserExists = GetTheUser(UpdatedInfo[1])
+        if UserExists is not None:
+            HomeInfo = GetHomeInfo(UserId)
+            return template("edit-user", User=User, 
+                                        Users=UserInfos(HomeInfo[1]), 
+                                        Chores=GetChores(SubUserId), 
+                                        HomeInfo=HomeInfo, 
+                                        UserId=UserId,
+                                        error={"emailError": "error"})
+        else:
+            HomeInfo = GetHomeInfo(UserId)
+            Sql2 = "UPDATE PERSON set user_name = %s, user_email = %s, admin = %s where user_id = %s;"
+            Cur.execute(Sql2, (UpdatedInfo[0], UpdatedInfo[1], UpdatedInfo[2], SubUserId))
+            Conn.commit()
+            DataBaseDisconnect()
+            return template("admin-page", Users=UserInfos(HomeInfo[1]), 
+                                        CompletedChores=GetCompletedChores(HomeInfo[1]),
+                                        Chores=GetChoreInfo(HomeInfo[1]), 
+                                        HomeInfo=HomeInfo, 
+                                        UserId=UserId,
+                                        error={"SuicideError": ""}) 
+    else:
+        HomeInfo = GetHomeInfo(UserId)
+        Sql2 = "UPDATE PERSON set user_name = %s, user_email = %s, admin = %s where user_id = %s;"
+        Cur.execute(Sql2, (UpdatedInfo[0], UpdatedInfo[1], UpdatedInfo[2], SubUserId))
+        Conn.commit()
+        DataBaseDisconnect()
+        return template("admin-page", Users=UserInfos(HomeInfo[1]), 
+                                    CompletedChores=GetCompletedChores(HomeInfo[1]),
+                                    Chores=GetChoreInfo(HomeInfo[1]), 
+                                    HomeInfo=HomeInfo, 
+                                    UserId=UserId,
+                                    error={"SuicideError": ""})
+        
 
 
 
@@ -178,8 +203,8 @@ def UpdateChore(UserId, ChoreId):
     """Function that retrieves the new data from the edit chore form and updates the data in the database"""
     Conn = DataBaseConnect()
     Cur = Conn.cursor()
-    UpdatedInfo = [getattr(request.forms, "InputNameIssue"),
-                    getattr(request.forms, "CommentIssue"),
+    UpdatedInfo = [getattr(request.forms, "InputNameIssue").title(),
+                    getattr(request.forms, "CommentIssue").title(),
                     int(getattr(request.forms, "WorthIssue")),
                     getattr(request.forms, "UserIssue"),
                     getattr(request.forms, "Deadline")]
@@ -202,11 +227,11 @@ def UpdateChore(UserId, ChoreId):
 @route("/user-registration", method="POST")
 def CaptureRegistration():
     """Function that retrieves the data from the registration form and shows an error if the Email is incorrect"""
-    UserInfo = [getattr(request.forms, "inputUserName4"),
-                getattr(request.forms, "InputUserEmail2"),
+    UserInfo = [getattr(request.forms, "inputUserName4").title(),
+                getattr(request.forms, "InputUserEmail2").lower(),
                 pbkdf2_sha256.hash(getattr(request.forms, "inputPassword4")),
                 getattr(request.forms, "inputAdmin4"),
-                getattr(request.forms, "inputHomeName4")]
+                getattr(request.forms, "inputHomeName4").title()]
     UserExists = GetTheUser(UserInfo[1])
     if UserExists is not None:
         return template("log_in/index", error={"emailError": "errortwo", "shake": "error", "passwordError": ""})
@@ -220,8 +245,8 @@ def CaptureRegistration():
 @route("/subuser-registration/<UserId>", method="POST")
 def CaptureSubuserRegistration(UserId):
     """Function that retrieves the data from the registration form and checks if the user email already exists"""
-    UserInfo = [getattr(request.forms, "inputUserName4"),
-                getattr(request.forms, "InputUserEmail1"),
+    UserInfo = [getattr(request.forms, "inputUserName4").title(),
+                getattr(request.forms, "InputUserEmail1").lower(),
                 pbkdf2_sha256.hash(getattr(request.forms, "inputPassword4")),
                 getattr(request.forms, "inputAdmin4")]
     UserExists = GetTheUser(UserInfo[1])
@@ -247,8 +272,8 @@ def CaptureSubuserRegistration(UserId):
 @route("/choreReg/<UserId>", method="POST")
 def CaptureChore(UserId):
     """Function that retrieves the data from the create-issue form"""
-    ChoreInput = [getattr(request.forms, "InputNameIssue"),
-                getattr(request.forms, "CommentIssue"),
+    ChoreInput = [getattr(request.forms, "InputNameIssue").title(),
+                getattr(request.forms, "CommentIssue").title(),
                 int(getattr(request.forms, "WorthIssue")),
                 getattr(request.forms, "UserIssue"),
                 getattr(request.forms, "Deadline")]

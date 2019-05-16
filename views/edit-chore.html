@@ -1,27 +1,27 @@
 % include("_header2_.html")
-    <h3>Skapa ny syssla nedan:</h3>
-        <form action="/update-chore/{{UId}}/{{Chore[0]}}" method="post">
+    <h3>Ändra information för sysslan nedan:</h3>
+        <form action="/update-chore/{{UserId}}/{{Chore[0]}}" method="post">
             <div class="form-row">
                 <div class="form-group col-md-3">
-                    <label for="InputNameIssue">Namn på syssla</label>
+                    <label for="InputNameIssue">Sysslans namn</label>
                     <input class="form-control" name="InputNameIssue" id="InputNameIssue" value="{{Chore[1]}}" required>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <label for="CommentIssue">Kommentar om syssla</label>
+                    <label for="CommentIssue">Kommentar om sysslan</label>
                     <textarea class="form-control" name="CommentIssue" id="CommentIssue" required>{{Chore[2]}}</textarea>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-3">
-                    <label for="WorthIssue">Sysslans värde i <img src="/static/images/Logotype.png" style="height: 20px; width: 20px;" ></label>
+                    <label for="WorthIssue">Hur många <img src="/static/images/Logotype.png" style="height: 20px; width: 20px;" > är sysslan värd?</label>
                     <input class="form-control" maxlength="3" name="WorthIssue" id="WorthIssue" type="" value="{{Chore[3]}}" required>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-3">
-                    <label for="UserIssue">Tilldela Syssla till ny användare</label>
+                    <label for="UserIssue">Tilldela sysslan till en familjemedlem</label>
                     <select name="UserIssue" class="custom-select" id="inputGroupSelect01">
                         <option value="{{Chore[5]}}" selected>{{Chore[4]}}</option>
                         % for User in Users:
@@ -36,6 +36,6 @@
                     <input class="form-control" type="date" name="Deadline" id="Deadline" value="{{Chore[6]}}" required>
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary">Spara syssla</button>
+            <button type="submit" class="btn btn-primary">Spara</button>
         </form>
 % include("_footer2_.html")

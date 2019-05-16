@@ -1,12 +1,8 @@
-drop table ROLES cascade;
 drop table HOME cascade;
 drop table CHORE cascade;
-drop table COMPLETED_CHORE cascade;
-drop table BANK_ACCOUNT cascade;
 drop table PERSON cascade;
 drop table LIVES_IN cascade;
 drop table RESPONSIBILITY cascade;
-drop table DEADLINE cascade;
 
 
 create table PERSON

@@ -140,3 +140,20 @@
             transform: translate3d(4px, 0, 0);
             }
         }
+#inputEmail4.error{
+  animation-name: inputEmail4;
+	animation-duration: 1s;
+  transition: 0.5s ease;
+}
+@keyframes inputEmail4 {
+	from {background-color: white;}
+  to {background-color: #FF0000;}
+}
+#inputEmail4.error{
+	color: #000;
+  background-color: white;
+  border: 3px solid #FF0000;
+  animation-name: inputEmail4;
+  animation-duration: 1s;
+  transition: 0.5s ease;
+}
