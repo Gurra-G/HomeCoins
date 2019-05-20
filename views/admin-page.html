@@ -5,7 +5,7 @@
     <div class="item col-md-4">
       <div class="card mb-4 shadow-sm">
         <a href="/user-details/{{UserId}}/{{User[0]}}">
-          <img src="/static/images/User_Avatar.png" class="avatar">
+          <img src="{{User[4]}}" class="avatar">
         </a>
         <div class="card-body">
           <p class="card-text">{{User[1]}}</p>
@@ -30,18 +30,15 @@
     </div>
     % end
   </div>
-  <style>#suicideerror {
-    display: none;
-  }</style>
 
   <h1 class="headlines">Pågående Sysslor</h1>
     <div class="container">
       <div class="row">
             % for Chore in Chores:
-            <div class="item col-md-4">
+            <div class="item col-md-4 choresitems">
               <div class="card mb-4 shadow-sm">
                 <div class="iconHolder">
-                  <img class="choreIcon" src="/static/images/laundry.png">
+                  <img class="choreIcon" src="{{Chore[7]}}">
                 </div>
                 <div class="card-body">
                   <p class="card-text">{{Chore[1]}}</p>
@@ -79,17 +76,13 @@
   <div class="container">
     <div class="row">
           % for Completed in CompletedChores:
-          <div class="item col-md-4">
+          <div class="item col-md-4 completed">
             <div class="card mb-4 shadow-sm">
-              <svg class="bd-placeholder-img card-img-top" width="100%" height="225" 
-                xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" 
-                focusable="false" role="img" aria-label="Placeholder: Thumbnail">
-                  <title>{{Completed[1]}}</title>
-                  <rect width="100%" height="100%" fill="#55595c"></rect>
-                  <text x="50%" y="50%" fill="#eceeef" dy=".3em">{{Completed[1]}}</text>
-              </svg>
+              <div class="iconHolder">
+                <img class="choreIcon" src="{{Completed[7]}}">
+              </div>
               <div class="card-body">
-                <p class="card-text">{{Completed[2]}}</p>
+                <p class="card-text">{{Completed[1]}}</p>
                 <div class="d-flex justify-content-between align-items-center">
                   <div class="btn-group">
                     <a class="icon" href="/DeleteChore/{{UserId}}/{{Completed[0]}}">
@@ -106,4 +99,5 @@
           % end
       </div>
   </div>
+
 % include("_footer2_.html") 

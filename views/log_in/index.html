@@ -53,6 +53,12 @@
           id="inputPassword4"
           required
         />
+        <select name="inputAvatar4" class="custom-select" id="inputGroupSelect01" required>
+          <option selected>Välj Avatar...</option>
+          % for Avatar in Avatars:
+          <option value="{{Avatar[1]}}">{{Avatar[0]}}</option>
+          % end
+        </select>
         <button class="btnT">Registrera</button>
       </form>
     </div>

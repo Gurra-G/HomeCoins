@@ -23,6 +23,14 @@
               <p id="parenterror">Det måste finnas minst en förälder i varje hem!</p>
             </div>
             % end
+            <div class="form-group col-md-3">
+              <select name="inputAvatar4" class="custom-select" id="inputGroupSelect01" required>
+                <option selected>Ändra Avatar...</option>
+                % for Avatar in Avatars:
+                <option value="{{Avatar[1]}}">{{Avatar[0]}}</option>
+                % end
+              </select>
+            </div>
           <button type="submit" class="btn btn-primary">Spara</button>
         </form>
         <style>#parenterror {

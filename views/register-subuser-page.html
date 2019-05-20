@@ -18,6 +18,14 @@
               <input type="radio" id="inputAdmin4" value="true" name="inputAdmin4" checked>Förälder<br>
               <input type="radio" id="inputAdmin4" value="false" name="inputAdmin4">Barn<br>
             </div>
+            <div class="form-group col-md-3">
+              <select name="inputAvatar4" class="custom-select" id="inputGroupSelect01" required>
+                <option selected>Välj Avatar...</option>
+                % for Avatar in Avatars:
+                <option value="{{Avatar[1]}}">{{Avatar[0]}}</option>
+                % end
+              </select>
+            </div>
           <button type="submit" class="btn btn-primary">Spara</button>
         </form>
 % include("_footer2_.html")

@@ -8,7 +8,7 @@
                 </div>
             </div>
             <div class="form-row">
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-3">
                     <label for="CommentIssue">Kommentar om sysslan</label>
                     <textarea class="form-control" name="CommentIssue" id="CommentIssue" required>{{Chore[2]}}</textarea>
                 </div>
@@ -34,6 +34,16 @@
                 <div class="form-group col-md-3">
                     <label for="Deadline">När ska sysslan vara utförd?</label>
                     <input class="form-control" type="date" name="Deadline" id="Deadline" value="{{Chore[6]}}" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    <select name="inputChoreCategory" class="custom-select" id="inputGroupSelect01" required>
+                        <option selected>Välj kattegori...</option>
+                        % for Category in Categories:
+                        <option value="{{Category[1]}}">{{Category[0]}}</option>
+                        % end
+                    </select>
                 </div>
             </div>
             <button type="submit" class="btn btn-primary">Spara</button>

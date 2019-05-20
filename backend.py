@@ -36,7 +36,13 @@ def LoginCheck():
                                                 UserId=UserId,
                                                 error={"SuicideError": ""})
             elif Admin == False:
-                return template("user-page", UserId = UserId)
+                HomeInfo = GetHomeInfo(UserId)
+                return template("user-page", 
+                                            HomeInfo=HomeInfo,
+                                            UserId = UserId,
+                                            ChoreInfo=GetChores(UserId),
+                                            UserInfo=SpecificUser(UserId),
+                                            CompletedChores=GetUsersCompletedChores(UserId))
         else:
             return template("log_in/index", error={"emailError": "", "passwordError": "error", "shake": "error"})
     else:
@@ -47,14 +53,8 @@ def LoginCheck():
 @route("/login-page")
 def Login():
     """Displays the login page"""
-    return template("log_in/index", error={"emailError": "", "passwordError": "", "shake": ""})
-
-
-
-@route("/register-page")
-def Register():
-    """Displays the register page"""
-    return template("register-page")
+    return template("log_in/index", error={"emailError": "", "passwordError": "", "shake": ""}
+                    , Avatars=GetAvatars())
 
 
 
@@ -80,7 +80,8 @@ def RegisterSubUser(UserId):
                                             Chores=GetChoreInfo(HomeInfo[1]), 
                                             Users=UserInfos(HomeInfo[1]), 
                                             UserId=UserId,
-                                            error={"emailError": ""})
+                                            error={"emailError": ""},
+                                            Avatars=GetAvatars())
 
 
 
@@ -111,21 +112,19 @@ def UserDetails(UserId, SubUserId):
                                     UserId=UserId)
 
 
+
 @route("/edit-user/<UserId>/<SubUserId>")
 def EditUser(UserId, SubUserId):
     """Fuction that retrieves information about a specific user to fill in the form when the page loads"""
-    Conn = DataBaseConnect()
-    Cur = Conn.cursor()
-    Sql = "SELECT * from PERSON where user_id = %s;"
-    Cur.execute(Sql, (SubUserId,))
-    User = Cur.fetchone()
     HomeInfo = GetHomeInfo(UserId)
-    return template("edit-user", User=User, 
+    return template("edit-user", User=SpecificUser(SubUserId), 
                                 Users=UserInfos(HomeInfo[1]), 
                                 Chores=GetChores(SubUserId), 
                                 HomeInfo=HomeInfo, 
                                 UserId=UserId,
-                                error={"emailError": ""})
+                                error={"emailError": ""},
+                                Avatars=GetAvatars())
+
 
 
 
@@ -139,7 +138,8 @@ def UpdateUser(UserId, SubUserId):
     User = Cur.fetchone()
     UpdatedInfo = [getattr(request.forms, "inputUserName4").title(),
                     getattr(request.forms, "inputEmail4").lower(),
-                    getattr(request.forms, "inputAdmin4")]
+                    getattr(request.forms, "inputAdmin4"),
+                    getattr(request.forms, "inputAvatar4")]
     if User[2] != UpdatedInfo[1]:
         UserExists = GetTheUser(UpdatedInfo[1])
         if UserExists is not None:
@@ -149,11 +149,12 @@ def UpdateUser(UserId, SubUserId):
                                         Chores=GetChores(SubUserId), 
                                         HomeInfo=HomeInfo, 
                                         UserId=UserId,
-                                        error={"emailError": "error"})
+                                        error={"emailError": "error"},
+                                        Avatars=GetAvatars())
         else:
             HomeInfo = GetHomeInfo(UserId)
-            Sql2 = "UPDATE PERSON set user_name = %s, user_email = %s, admin = %s where user_id = %s;"
-            Cur.execute(Sql2, (UpdatedInfo[0], UpdatedInfo[1], UpdatedInfo[2], SubUserId))
+            Sql2 = "UPDATE PERSON set user_name = %s, user_email = %s, admin = %s, user_avatar = %s where user_id = %s;"
+            Cur.execute(Sql2, (UpdatedInfo[0], UpdatedInfo[1], UpdatedInfo[2], UpdatedInfo[3], SubUserId))
             Conn.commit()
             DataBaseDisconnect()
             return template("admin-page", Users=UserInfos(HomeInfo[1]), 
@@ -164,8 +165,8 @@ def UpdateUser(UserId, SubUserId):
                                         error={"SuicideError": ""}) 
     else:
         HomeInfo = GetHomeInfo(UserId)
-        Sql2 = "UPDATE PERSON set user_name = %s, user_email = %s, admin = %s where user_id = %s;"
-        Cur.execute(Sql2, (UpdatedInfo[0], UpdatedInfo[1], UpdatedInfo[2], SubUserId))
+        Sql2 = "UPDATE PERSON set user_name = %s, user_email = %s, admin = %s, user_avatar = %s where user_id = %s;"
+        Cur.execute(Sql2, (UpdatedInfo[0], UpdatedInfo[1], UpdatedInfo[2], UpdatedInfo[3], SubUserId))
         Conn.commit()
         DataBaseDisconnect()
         return template("admin-page", Users=UserInfos(HomeInfo[1]), 
@@ -195,7 +196,8 @@ def EditChore(UserId, ChoreId):
                                     Users=UserInfos(HomeInfo[1]),
                                     Chores=GetChoreInfo(HomeInfo[1]), 
                                     HomeInfo=HomeInfo, 
-                                    UserId=UserId)
+                                    UserId=UserId,
+                                    Categories=GetChoreCategories())
 
 
 
@@ -208,11 +210,12 @@ def UpdateChore(UserId, ChoreId):
                     getattr(request.forms, "CommentIssue").title(),
                     int(getattr(request.forms, "WorthIssue")),
                     getattr(request.forms, "UserIssue"),
-                    getattr(request.forms, "Deadline")]
+                    getattr(request.forms, "Deadline"),
+                    getattr(request.forms, "inputChoreCategory")]
     Sql = "UPDATE CHORE set chore_name = %s, chore_description = %s where chore_id = %s;"
     Cur.execute(Sql, (UpdatedInfo[0], UpdatedInfo[1], ChoreId))
-    Sql2 = "UPDATE RESPONSIBILITY set user_id = %s, chore_worth = %s, deadline = %s where chore_id = %s;"
-    Cur.execute(Sql2, (UpdatedInfo[3], UpdatedInfo[2], UpdatedInfo[4], ChoreId))
+    Sql2 = "UPDATE RESPONSIBILITY set user_id = %s, chore_worth = %s, deadline = %s, category = %s where chore_id = %s;"
+    Cur.execute(Sql2, (UpdatedInfo[3], UpdatedInfo[2], UpdatedInfo[4], UpdatedInfo[5], ChoreId))
     Conn.commit()
     DataBaseDisconnect()
     HomeInfo = GetHomeInfo(UserId)
@@ -232,12 +235,14 @@ def CaptureRegistration():
                 getattr(request.forms, "InputUserEmail2").lower(),
                 pbkdf2_sha256.hash(getattr(request.forms, "inputPassword4")),
                 getattr(request.forms, "inputAdmin4"),
-                getattr(request.forms, "inputHomeName4").title()]
+                getattr(request.forms, "inputHomeName4").title(),
+                getattr(request.forms, "inputAvatar4")]
     UserExists = GetTheUser(UserInfo[1])
+    Avatar = UserInfo[4]
     if UserExists is not None:
         return template("log_in/index", error={"emailError": "errortwo", "shake": "error", "passwordError": ""})
     else:
-        UserRegistration(UserInfo)
+        UserRegistration(UserInfo, Avatar)
         HomeRegistration(UserInfo[1], UserInfo[4])
         return template("successful-registration")
 
@@ -249,7 +254,9 @@ def CaptureSubuserRegistration(UserId):
     UserInfo = [getattr(request.forms, "inputUserName4").title(),
                 getattr(request.forms, "InputUserEmail1").lower(),
                 pbkdf2_sha256.hash(getattr(request.forms, "inputPassword4")),
-                getattr(request.forms, "inputAdmin4")]
+                getattr(request.forms, "inputAdmin4"),
+                getattr(request.forms, "inputAvatar4")]
+    Avatar = UserInfo[4]
     UserExists = GetTheUser(UserInfo[1])
     if UserExists is not None:
         HomeInfo = GetHomeInfo(UserId)
@@ -258,7 +265,7 @@ def CaptureSubuserRegistration(UserId):
                                                 Chores=GetChoreInfo(HomeInfo[1]), 
                                                 HomeInfo=HomeInfo, error={"emailError": "error"})
     else:
-        UserRegistration(UserInfo)
+        UserRegistration(UserInfo, Avatar)
         LivesInRegistration(UserInfo[1], UserId)
         HomeInfo = GetHomeInfo(UserId)
         return template("admin-page", UserId=UserId, 
@@ -277,7 +284,8 @@ def CaptureChore(UserId):
                 getattr(request.forms, "CommentIssue").title(),
                 int(getattr(request.forms, "WorthIssue")),
                 getattr(request.forms, "UserIssue"),
-                getattr(request.forms, "Deadline")]
+                getattr(request.forms, "Deadline"),
+                getattr(request.forms, "inputChoreCategory")]
     ChoreRegistration(ChoreInput)
     HomeInfo = GetHomeInfo(UserId)
     return template("admin-page", UserId=UserId, 
@@ -291,22 +299,14 @@ def CaptureChore(UserId):
 
 @route("/create-issue/<UserId>")
 def CreateChore(UserId):
-    """Displays the create issue page"""
-    Conn = DataBaseConnect()
-    Cur = Conn.cursor()
-    Sql = """SELECT home_id from LIVES_IN where user_id = %s"""
-    Cur.execute(Sql, (UserId,))
-    HomeId = Cur.fetchone()
-    Sql2 = """SELECT user_name, PERSON.user_id from PERSON join 
-            LIVES_IN on PERSON.user_id = LIVES_IN.user_id where home_id = %s"""
-    Cur.execute(Sql2, (HomeId,))
-    HomesUsers = Cur.fetchall()
+    """Displays the create-chore page"""
     HomeInfo = GetHomeInfo(UserId)
-    return template("create-issue", HomesUsers=HomesUsers, 
+    return template("create-issue", HomesUsers=GetHomesUsers(UserId), 
                                     UserId=UserId, 
                                     Users=UserInfos(HomeInfo[1]), 
                                     Chores=GetChoreInfo(HomeInfo[1]), 
-                                    HomeInfo=HomeInfo)
+                                    HomeInfo=HomeInfo,
+                                    Categories=GetChoreCategories())
 
 
 

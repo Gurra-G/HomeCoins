@@ -100,7 +100,7 @@ form {
 	text-align: center;
 }
 
-input {
+input, select {
 	background-color: #fff;
 	border-image-source: linear-gradient(to top right, #7E0F4B, #1A5865);
   	border-width: 3pt;
