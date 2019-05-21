@@ -29,7 +29,7 @@ def LoginCheck():
         if LoginInfo[0] == UserEmail and pbkdf2_sha256.verify(LoginInfo[1], UserPassword) is True:
             if Admin == True:
                 HomeInfo = GetHomeInfo(UserId)
-                return template("admin-page", HomeInfo=HomeInfo, 
+                return template("admin-page2", HomeInfo=HomeInfo, 
                                                 CompletedChores=GetCompletedChores(HomeInfo[1]),
                                                 Chores=GetChoreInfo(HomeInfo[1]), 
                                                 Users=UserInfos(HomeInfo[1]), 
@@ -37,7 +37,7 @@ def LoginCheck():
                                                 error={"SuicideError": ""})
             elif Admin == False:
                 HomeInfo = GetHomeInfo(UserId)
-                return template("user-page", 
+                return template("user-page2", 
                                             HomeInfo=HomeInfo,
                                             UserId = UserId,
                                             ChoreInfo=GetChores(UserId),
@@ -239,6 +239,8 @@ def CaptureRegistration():
                 getattr(request.forms, "inputAvatar4")]
     UserExists = GetTheUser(UserInfo[1])
     Avatar = UserInfo[4]
+    if Avatar is None:
+        Avatar = '/static/images/avatars/ninja.png'
     if UserExists is not None:
         return template("log_in/index", error={"emailError": "errortwo", "shake": "error", "passwordError": ""})
     else:
