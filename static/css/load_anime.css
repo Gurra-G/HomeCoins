@@ -1,0 +1,31 @@
+body {
+  background: -webkit-linear-gradient(to top right, #7E0F4B, #1A5865);
+  background: linear-gradient(to top right, #7E0F4B, #1A5865);
+}
+
+.Name {
+  font-family: 'Russo One', sans-serif;
+  font-weight: 800;
+  font-size: 5.0em;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.5em;
+  text-align: center;
+  z-index: 0;
+}
+
+.Name .word {
+  line-height: 1em;
+  text-align: center;
+}
+
+.logo {
+  display: block;
+  margin-top: 1.2em;
+  margin-bottom: 0.5em;
+  margin-left: auto;
+  margin-right: auto;
+  z-index: -1;
+  height: 7em;
+  width: 7em;
+  }
