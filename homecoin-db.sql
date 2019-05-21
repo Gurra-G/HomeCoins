@@ -93,4 +93,8 @@ insert into CATEGORY (category_name, category_path) VALUES(
     ('Ta ut sopor','/static/images/chores/trash.png'),
     ('Tvatta','/static/images/chores/laundry.png'),
     ('Skura','/static/images/chores/scrub.png'),
+    ('Laga mat','/static/images/chores/cookfood.png'),
+    ('Badda sangen','/static/images/chores/makebed.png'),
+    ('Tvatta bilen','/static/images/chores/washcar.png'),
+    ('Handla mat','/static/images/chores/grocery.png'),
     ('Annat','/static/images/chores/other.png');
