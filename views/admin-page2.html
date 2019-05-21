@@ -2,29 +2,29 @@
 <div id="successMessage">
 
 <h1 class="Name">
-  <span class="word"><img class="logo" src="Logotype.png" alt="Home Coins Logo"></span>
+  <span class="word"><img class="logo" src="/static/landing_page_images/Logotype.png" alt="Home Coins Logo"></span>
   <span class="word">Home</span>
   <span class="word">Coins</span>
 </h1>
 </div>
 
-<h1>Användare:</h1>
+<h1 class="headlines">Familjemedlemmar</h1>
 <div class="row">
     % for User in Users:
     <div class="item col-md-4">
       <div class="card mb-4 shadow-sm">
         <a href="/user-details/{{UserId}}/{{User[0]}}">
-          <img src="/static/images/User_Avatar.png" class="avatar">
+          <img src="{{User[4]}}" class="avatar">
         </a>
         <div class="card-body">
           <p class="card-text">{{User[1]}}</p>
           <p id="suicideerror" class="{{ error['SuicideError'] }}">Du kan inte radera dig själv!</p>
           <div class="d-flex justify-content-between align-items-center">
             <div class="btn-group">
-              <a href="/edit-user/{{UserId}}/{{User[0]}}">
+              <a class="icon" href="/edit-user/{{UserId}}/{{User[0]}}">
                 <img src="/static/images/baseline-edit-24px.svg"/>
               </a>
-              <a href="/DeleteUser/{{UserId}}/{{User[0]}}">
+              <a class="icon" href="/DeleteUser/{{UserId}}/{{User[0]}}">
                 <img src="/static/images/baseline-delete-24px.svg"/>
               </a>
             </div>
@@ -39,78 +39,72 @@
     </div>
     % end
   </div>
-  <style>#suicideerror {
-    display: none;
-  }</style>
-
-  <hr>
-  <h1>Pågående Sysslor:</h1>
-    <div class="container">
-      <div class="row">
-            % for Chore in Chores:
-            <div class="item col-md-4">
-              <div class="card mb-4 shadow-sm">
-                <svg class="bd-placeholder-img card-img-top" width="100%" height="225"
-                  xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"
-                  focusable="false" role="img" aria-label="Placeholder: Thumbnail">
-                    <title>{{Chore[1]}}</title>
-                    <rect width="100%" height="100%" fill="#55595c"></rect>
-                    <text x="50%" y="50%" fill="#eceeef" dy=".3em">{{Chore[1]}}</text>
-                </svg>
-                <div class="card-body">
-                  <p class="card-text">{{Chore[2]}}</p>
-                  <div class="d-flex justify-content-between align-items-center">
-                    <div class="btn-group">
-                      <a href="/CompleteChore/{{UserId}}/{{Chore[0]}}">
-                        <img src="/static/images/baseline-check_circle-24px.svg"/>
-                      </a>
-                      <a href="/EditChore/{{UserId}}/{{Chore[0]}}">
-                        <img src="/static/images/baseline-edit-24px.svg"/>
-                      </a>
-                      <a href="/DeleteChore/{{UserId}}/{{Chore[0]}}">
-                        <img src="/static/images/baseline-delete-24px.svg"/>
-                      </a>
-                    </div>
-                    <small class="text-muted">Värde: <br>{{Chore[3]}} <img src="/static/images/Logotype.png" style="height: 10px; width: 10px;" ></small>
-                    <small class="text-muted">Ska utföras av: <br>{{Chore[5]}}</small>
-                    <small class="text-muted">Görs senast: <br>{{Chore[6]}}</small>
-                  </div>
-                </div>
-              </div>
+<h1 class="headlines">Pågående Sysslor</h1>
+<div class="container">
+  <div class="row">
+        % for Chore in Chores:
+        <div class="item col-md-4 choresitems">
+          <div class="card mb-4 shadow-sm">
+            <div class="iconHolder">
+              <img class="choreIcon" src="{{Chore[7]}}">
             </div>
-            % end
-        </div>
-    </div>
-    <hr>
-<h1>Avklarade Sysslor:</h1>
-  <div class="container">
-    <div class="row">
-          % for Completed in CompletedChores:
-          <div class="item col-md-4">
-            <div class="card mb-4 shadow-sm">
-              <svg class="bd-placeholder-img card-img-top" width="100%" height="225"
-                xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"
-                focusable="false" role="img" aria-label="Placeholder: Thumbnail">
-                  <title>{{Completed[1]}}</title>
-                  <rect width="100%" height="100%" fill="#55595c"></rect>
-                  <text x="50%" y="50%" fill="#eceeef" dy=".3em">{{Completed[1]}}</text>
-              </svg>
-              <div class="card-body">
-                <p class="card-text">{{Completed[2]}}</p>
-                <div class="d-flex justify-content-between align-items-center">
-                  <div class="btn-group">
-                    <a href="/DeleteChore/{{UserId}}/{{Completed[0]}}">
-                      <img src="/static/images/baseline-delete-24px.svg"/>
-                    </a>
-                  </div>
-                  <small class="text-muted">Värde: <br>{{Completed[3]}} <img src="/static/images/Logotype.png" style="height: 10px; width: 10px;" ></small>
-                  <small class="text-muted">Utförd av: <br>{{Completed[5]}}</small>
-                  <small class="text-muted">Avklarad: <br>{{Completed[6]}}</small>
+            <div class="card-body">
+              <p class="card-text">{{Chore[1]}}</p>
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="btn-group">
+                  <a class="icon" href="/CompleteChore/{{UserId}}/{{Chore[0]}}">
+                    <img src="/static/images/baseline-check_circle-24px.svg"/>
+                  </a>
+                  <a class="icon" href="/EditChore/{{UserId}}/{{Chore[0]}}">
+                    <img src="/static/images/baseline-edit-24px.svg"/>
+                  </a>
+                  <a class="icon" href="/DeleteChore/{{UserId}}/{{Chore[0]}}">
+                    <img src="/static/images/baseline-delete-24px.svg"/>
+                  </a>
                 </div>
+                <ul class="listinfo">
+                  <li>
+                    <small class="text-muted">Värde: {{Chore[3]}} <img src="/static/images/Logotype.png" style="height: 10px; width: 10px;" ></small>
+                  </li>
+                  <li>
+                    <small class="text-muted">Ska utföras av: {{Chore[5]}}</small>
+                  </li>
+                  <li>
+                    <small class="text-muted">Görs senast: {{Chore[6]}}</small>
+                  </li>
+              </ul>
               </div>
             </div>
           </div>
-          % end
+        </div>
+        % end
+    </div>
+</div>
+<h1 class="headlines">Avklarade Sysslor</h1>
+<div class="container">
+<div class="row">
+      % for Completed in CompletedChores:
+      <div class="item col-md-4 completed">
+        <div class="card mb-4 shadow-sm">
+          <div class="iconHolder">
+            <img class="choreIcon" src="{{Completed[7]}}">
+          </div>
+          <div class="card-body">
+            <p class="card-text">{{Completed[1]}}</p>
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="btn-group">
+                <a class="icon" href="/DeleteChore/{{UserId}}/{{Completed[0]}}">
+                  <img src="/static/images/baseline-delete-24px.svg"/>
+                </a>
+              </div>
+              <small class="text-muted">Värde: <br>{{Completed[3]}} <img src="/static/images/Logotype.png" style="height: 10px; width: 10px;" ></small>
+              <small class="text-muted">Utförd av: <br>{{Completed[5]}}</small>
+              <small class="text-muted">Avklarad: <br>{{Completed[6]}}</small>
+            </div>
+          </div>
+        </div>
       </div>
+      % end
   </div>
+</div>
 % include("_footer2_.html")

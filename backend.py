@@ -44,9 +44,9 @@ def LoginCheck():
                                             UserInfo=SpecificUser(UserId),
                                             CompletedChores=GetUsersCompletedChores(UserId))
         else:
-            return template("log_in/index", error={"emailError": "", "passwordError": "error", "shake": "error"})
+            return template("log_in/index", Avatars=GetAvatars(), error={"emailError": "", "passwordError": "error", "shake": "error"})
     else:
-        return template("log_in/index", error={"emailError": "error", "passwordError": "", "shake": "error"})
+        return template("log_in/index", Avatars=GetAvatars(), error={"emailError": "error", "passwordError": "", "shake": "error"})
 
 
 
@@ -140,6 +140,8 @@ def UpdateUser(UserId, SubUserId):
                     getattr(request.forms, "inputEmail4").lower(),
                     getattr(request.forms, "inputAdmin4"),
                     getattr(request.forms, "inputAvatar4")]
+    if UpdatedInfo[3] == 'Ändra Avatar...':
+        UpdatedInfo[3] = User[5]
     if User[2] != UpdatedInfo[1]:
         UserExists = GetTheUser(UpdatedInfo[1])
         if UserExists is not None:
@@ -206,16 +208,21 @@ def UpdateChore(UserId, ChoreId):
     """Function that retrieves the new data from the edit chore form and updates the data in the database"""
     Conn = DataBaseConnect()
     Cur = Conn.cursor()
+    Sql = """SELECT * from RESPONSIBILITY where chore_id = %s"""
+    Cur.execute(Sql, (ChoreId,))
+    Chore = Cur.fetchone()
     UpdatedInfo = [getattr(request.forms, "InputNameIssue").title(),
                     getattr(request.forms, "CommentIssue").title(),
                     int(getattr(request.forms, "WorthIssue")),
                     getattr(request.forms, "UserIssue"),
                     getattr(request.forms, "Deadline"),
                     getattr(request.forms, "inputChoreCategory")]
-    Sql = "UPDATE CHORE set chore_name = %s, chore_description = %s where chore_id = %s;"
-    Cur.execute(Sql, (UpdatedInfo[0], UpdatedInfo[1], ChoreId))
-    Sql2 = "UPDATE RESPONSIBILITY set user_id = %s, chore_worth = %s, deadline = %s, category = %s where chore_id = %s;"
-    Cur.execute(Sql2, (UpdatedInfo[3], UpdatedInfo[2], UpdatedInfo[4], UpdatedInfo[5], ChoreId))
+    if UpdatedInfo[5] == 'Välj kategori...':
+        UpdatedInfo[5] = Chore[5]
+    Sql2 = "UPDATE CHORE set chore_name = %s, chore_description = %s where chore_id = %s;"
+    Cur.execute(Sql2, (UpdatedInfo[0], UpdatedInfo[1], ChoreId))
+    Sql3 = "UPDATE RESPONSIBILITY set user_id = %s, chore_worth = %s, deadline = %s, category = %s where chore_id = %s;"
+    Cur.execute(Sql3, (UpdatedInfo[3], UpdatedInfo[2], UpdatedInfo[4], UpdatedInfo[5], ChoreId))
     Conn.commit()
     DataBaseDisconnect()
     HomeInfo = GetHomeInfo(UserId)
@@ -238,8 +245,8 @@ def CaptureRegistration():
                 getattr(request.forms, "inputHomeName4").title(),
                 getattr(request.forms, "inputAvatar4")]
     UserExists = GetTheUser(UserInfo[1])
-    Avatar = UserInfo[4]
-    if Avatar is None:
+    Avatar = UserInfo[5]
+    if Avatar == 'Välj Avatar...':
         Avatar = '/static/images/avatars/ninja.png'
     if UserExists is not None:
         return template("log_in/index", error={"emailError": "errortwo", "shake": "error", "passwordError": ""})
@@ -259,6 +266,8 @@ def CaptureSubuserRegistration(UserId):
                 getattr(request.forms, "inputAdmin4"),
                 getattr(request.forms, "inputAvatar4")]
     Avatar = UserInfo[4]
+    if Avatar == 'Välj Avatar...':
+        Avatar = '/static/images/avatars/ninja.png'
     UserExists = GetTheUser(UserInfo[1])
     if UserExists is not None:
         HomeInfo = GetHomeInfo(UserId)
@@ -288,6 +297,8 @@ def CaptureChore(UserId):
                 getattr(request.forms, "UserIssue"),
                 getattr(request.forms, "Deadline"),
                 getattr(request.forms, "inputChoreCategory")]
+    if ChoreInput[5] == 'Välj kategori...':
+        ChoreInput[5] = '/static/images/chores/other.png'
     ChoreRegistration(ChoreInput)
     HomeInfo = GetHomeInfo(UserId)
     return template("admin-page", UserId=UserId, 
