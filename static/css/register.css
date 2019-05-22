@@ -5,6 +5,10 @@
           height: 100%;
         }
 
+        #fieldset_form{
+          border: 2px solid #ffffff !important;
+        }
+
         body {
           display: -ms-flexbox;
           display: flex;

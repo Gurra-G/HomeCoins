@@ -1,15 +1,14 @@
 % include("_header2_.html")
-    <h3>Ändra information för sysslan nedan:</h3>
+    <h3 class="form_headline">Ändra information för sysslan nedan</h3>
         <form action="/update-chore/{{UserId}}/{{Chore[0]}}" method="post">
+            <fieldset>
             <div class="form-row">
                 <div class="form-group col-md-3">
-                    <label for="InputNameIssue">Sysslans namn</label>
                     <input class="form-control" name="InputNameIssue" id="InputNameIssue" value="{{Chore[1]}}" required>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-3">
-                    <label for="CommentIssue">Kommentar om sysslan</label>
                     <textarea class="form-control" name="CommentIssue" id="CommentIssue" required>{{Chore[2]}}</textarea>
                 </div>
             </div>
@@ -21,7 +20,6 @@
             </div>
             <div class="form-row">
                 <div class="form-group col-md-3">
-                    <label for="UserIssue">Tilldela sysslan till en familjemedlem</label>
                     <select name="UserIssue" class="custom-select" id="inputGroupSelect01">
                         <option value="{{Chore[5]}}" selected>{{Chore[4]}}</option>
                         % for User in Users:
@@ -47,5 +45,6 @@
                 </div>
             </div>
             <button type="submit" class="btn btn-primary">Spara</button>
+            </fieldset>
         </form>
 % include("_footer2_.html")

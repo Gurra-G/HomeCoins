@@ -1,19 +1,10 @@
 % include("_header_.html")
-<div id="UserCard" class="media">
-    <div class="btn-group">
-        <a class="icon" href="/edit-user/{{UserId}}">
-          <img id="pen" src="/static/images/baseline-edit-24px.svg"/>
-        </a>
-      </div>
+<div id="SubUserCard" class="media">
     <img src="{{UserInfo[5]}}" class="align-self-center mr-3" alt="Avatar" style="height: 100px; width: 100px;">
     <div class="media-body">
         <h5 class="mt-0">Namn: {{UserInfo[1]}}</h5>
         <p>Email: {{UserInfo[2]}}</p>
-        % if UserInfo[3]:
-          <p class="mb-0">Förälder</p>
-        % else:
-          <p class="mb-0">Barn</p>
-        % end
+        
     </div>
 </div>
 <h4 class="headlines">Mina pågående sysslor</h4>

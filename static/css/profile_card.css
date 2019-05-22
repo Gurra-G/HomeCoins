@@ -111,4 +111,12 @@
     padding: 5%;
 }
 
-
+#SubUserCard {
+    text-align: center;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    color: #fff;
+    width: 20%;
+    padding: 5%;
+}

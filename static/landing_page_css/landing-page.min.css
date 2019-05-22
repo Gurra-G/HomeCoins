@@ -2,7 +2,7 @@
  * Start Bootstrap - Landing Page v5.0.4 (https://startbootstrap.com/template-overviews/landing-page)
  * Copyright 2013-2019 Start Bootstrap
  * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap-landing-page/blob/master/LICENSE)
- */body{font-family:Lato,'Helvetica Neue',Helvetica,Arial,sans-serif}h1,h2,h3,h4,h5,h6{font-family:Lato,'Helvetica Neue',Helvetica,Arial,sans-serif;font-weight:700}
+ */body{font-family:Lato, sans-serif}h2,h3,h4,h5,h6{font-family:Lato,'Helvetica Neue',Helvetica,Arial,sans-serif;font-weight:700}h1{font-family: Russo One;font-weight:700}
 
  html {
    scroll-behavior: smooth;

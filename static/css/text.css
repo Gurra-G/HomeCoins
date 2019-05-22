@@ -1,8 +1,12 @@
 body {
     color: #fff;
+	font-family:Lato, sans-serif;
 }
 
-
+h2,h3,h4,h5,h6 {
+	font-family:Lato,'Helvetica Neue',Helvetica,Arial,sans-serif;
+	font-weight:700
+}
 
 .btn-primary {
     color: #fff;
@@ -21,7 +25,24 @@ body {
 
 .headlines {
     text-align: center;
-    font-family: 'Dancing Script', cursive;
+    font-family: Russo One;
+    font-weight: 300;
     margin-top: 50px;
     margin-bottom: 20px; 
+}
+
+.nav-headline{
+    font-family: Russo One;
+    font-weight: 300;
+}
+
+.TheHome{
+    font-family: Russo One;
+    font-weight: 300;
+}
+.form_headline{
+    text-align: center;
+    font-family: Russo One;
+    font-weight: 300;
+    padding-bottom: 30px;
 }

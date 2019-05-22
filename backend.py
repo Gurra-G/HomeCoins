@@ -273,7 +273,8 @@ def CaptureSubuserRegistration(UserId):
         HomeInfo = GetHomeInfo(UserId)
         return template("register-subuser-page", UserId=UserId, 
                                                 Users=UserInfos(HomeInfo[1]), 
-                                                Chores=GetChoreInfo(HomeInfo[1]), 
+                                                Chores=GetChoreInfo(HomeInfo[1]),
+                                                Avatars=GetAvatars(), 
                                                 HomeInfo=HomeInfo, error={"emailError": "error"})
     else:
         UserRegistration(UserInfo, Avatar)

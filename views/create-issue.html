@@ -1,15 +1,14 @@
 % include("_header2_.html")
-            <h3>Skapa en ny syssla nedan:</h3>
+            <h3 class="form_headline">Skapa en syssla nedan</h3>
             <form action="/choreReg/{{UserId}}" method="post">
+                <fieldset>
                 <div class="form-row">
                   <div class="form-group col-md-3">
-                      <label for="InputNameIssue">Namn på sysslan</label>
                       <input class="form-control" name="InputNameIssue" id="InputNameIssue" placeholder="Namn på syssla..." required>
                   </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-3">
-                        <label for="CommentIssue">Kommentar om sysslan</label>
                         <textarea class="form-control" name="CommentIssue" id="CommentIssue" placeholder="Kommentar om syssla..." required></textarea>
                     </div>
                 </div>
@@ -21,7 +20,6 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-3">
-                        <label for="UserIssue">Tilldela sysslan till en famijemedlem</label>
                         <select name="UserIssue" class="custom-select" id="inputGroupSelect01" required>
                             <option selected>Välj familjemedlem...</option>
                             % for User in Users:
@@ -47,5 +45,6 @@
                     </div>
                 </div>
                 <button type="submit" class="btn btn-primary">Spara</button>
+                </fieldset>
             </form>
 % include("_footer2_.html")
