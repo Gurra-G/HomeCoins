@@ -2,6 +2,7 @@ import psycopg2
 from dbcredentials import UserName, HostName, Password, Database
 from os import path
 import datetime
+import itertools
 
 
 
@@ -285,3 +286,20 @@ def GetUsersCompletedChores(UserId):
     Cur.execute(Sql, (UserId,))
     CompletedChores = Cur.fetchall()
     return CompletedChores
+
+
+#check this nickolaus!
+def GetTheStats(UserId):
+    """Function that returns the statistics of which user has the most coins"""
+    Conn = DataBaseConnect()
+    Cur = Conn.cursor()
+    Sql = """SELECT home_id from LIVES_IN where user_id = %s"""
+    Cur.execute(Sql, (UserId,))
+    HomeId = Cur.fetchone()
+    Sql2 = """SELECT PERSON.user_id, user_name, user_avatar, 
+            sum(chore_worth) from PERSON join RESPONSIBILITY on 
+                PERSON.user_id = RESPONSIBILITY.user_id join LIVES_IN on
+                PERSON.user_id = LIVES_IN.user_id where home_id = %s and completed is not null GROUP BY PERSON.user_id;"""
+    Cur.execute(Sql2, (HomeId,))
+    Statistics = Cur.fetchall()
+    return Statistics
