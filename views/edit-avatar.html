@@ -1,0 +1,14 @@
+% include("_header_.html")
+        <h3 class="form_headline">Välj en ny avatar</h3>
+        <form id="edit_user_form" action="/update-avatar/{{UserId}}" method="post">
+            <div class="form-group col-md-3">
+              <select name="inputAvatar4" class="custom-select" id="inputGroupSelect01" required>
+                <option value="{{UserInfo[5]}}" selected>Ändra Avatar...</option>
+                % for Avatar in Avatars:
+                <option value="{{Avatar[1]}}">{{Avatar[0]}}</option>
+                % end
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Spara</button>
+        </form>
+% include("_footer_.html")

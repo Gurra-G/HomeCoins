@@ -27,6 +27,8 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
   <link href='https://fonts.googleapis.com/css?family=Russo One' rel='stylesheet'>
   <link rel="stylesheet" href="/static/css/load_anime.css">
+  <link rel="stylesheet" href="/static/css/form.css">
+  <link rel="stylesheet" href="/static/css/leaderboard.css">
 </head>
 
 <body>
@@ -40,9 +42,8 @@
     <nav class="nav">
       <ul>
         <h4 class="nav-headline">Meny</h4>
-          <li><a href="#">Mina Coins</a></li>
           <li><a href="/Leaderboard/{{UserId}}">Tävling</a></li>
-          <li><a href="#">Ändra Avatar</a></li>
+          <li><a href="/EditAvatar/{{UserId}}">Ändra Avatar</a></li>
           <li id="LogOutButton"><a href="/">Logga ut</a></li>
         </ul>
       </nav>
@@ -51,7 +52,7 @@
           <h1 class="TheHome">{{HomeInfo[0]}}</h1>
         <ul class="navbar-nav mr-auto">
           <li class="nav-item active">
-            <a class="nav-link" href="#"><img src="/static/images/Logotype.png" style="height: 50px; width: 50px;" ></a>
+            <a class="nav-link" href="/go-back/{{UserId}}"><img src="/static/images/Logotype.png" style="height: 50px; width: 50px;" ></a>
           </li>
         </ul>
       </div>

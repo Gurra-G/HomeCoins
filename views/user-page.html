@@ -1,16 +1,19 @@
 % include("_header_.html")
-<div id="SubUserCard" class="media">
-    <img src="{{UserInfo[5]}}" class="align-self-center mr-3" alt="Avatar" style="height: 100px; width: 100px;">
-    <div class="media-body">
-        <h5 class="mt-0">Namn: {{UserInfo[1]}}</h5>
-        <p>Email: {{UserInfo[2]}}</p>
-        
-    </div>
+<div class="test">
+  <div id="SubUserCard" class="media">
+      <img src="{{UserInfo[5]}}" class="align-self-center mr-3" alt="Avatar" style="height: 100px; width: 100px;">
+      <div class="media-body">
+          <h5 class="mt-0">{{UserInfo[1]}}</h5>
+          <p>{{UserInfo[2]}}</p>
+          <p>Du har: {{Coins[0]}} <img src="/static/images/Logotype.png" style="height: 20px; width: 20px;" ></p>
+          
+      </div>
+  </div>
 </div>
 <h4 class="headlines">Mina pågående sysslor</h4>
 <div class="row">
   % for Chore in ChoreInfo:
-  <div class="col-md-4">
+  <div class="item col-md-4 choresitems">
     <div class="card mb-4 shadow-sm">
       <div class="iconHolder">
         <img class="choreIcon" src="{{Chore[8]}}">
@@ -23,8 +26,8 @@
               <img src="/static/images/baseline-check_circle-24px.svg"/>
             </a>
           </div>
-          <small class="text-muted">Värde: <br>{{Chore[3]}} <img src="/static/images/Logotype.png" style="height: 10px; width: 10px;" ></small>
-          <small class="text-muted">Görs senast: <br>{{Chore[6]}} </small>
+          <small class="text-muted"><strong>Värde:</strong> <br>{{Chore[3]}} <img src="/static/images/Logotype.png" style="height: 15px; width: 15px;"></small>
+          <small class="text-muted"><strong>Görs senast:</strong> <br>{{Chore[6]}} </small>
         </div>
       </div>
     </div>
@@ -34,16 +37,16 @@
 <h4 class="headlines">Mina avklarade Sysslor</h4>
 <div class="row">
   % for Completed in CompletedChores:
-  <div class="col-md-4">
+  <div class="item col-md-4 completed">
     <div class="card mb-4 shadow-sm">
       <div class="iconHolder">
         <img class="choreIcon" src="{{Completed[8]}}">
       </div>
       <div class="card-body">
-        <p class="card-text">{{Completed[2]}}</p>
+        <p class="card-text">{{Completed[1]}}</p>
         <div class="d-flex justify-content-between align-items-center">
-          <small class="text-muted">Värde: <br>{{Completed[5]}} <img src="/static/images/Logotype.png" style="height: 10px; width: 10px;" ></small>
-          <small class="text-muted">Avklarad: <br>{{Completed[7]}} </small>
+          <small class="text-muted"><strong>Värde:</strong> <br>{{Completed[5]}} <img src="/static/images/Logotype.png" style="height: 15px; width: 15px;"></small>
+          <small class="text-muted"><strong>Avklarad:</strong> <br>{{Completed[7]}} </small>
         </div>
       </div>
     </div>

@@ -1,11 +1,10 @@
 % include("_header_.html")
 <div class="container">
-  <p>{{UserStats}}</p>
   <canvas id="leaderChart"></canvas>
   
 </div>
 <script>
-    let UserData = "{{UserStats}}";
+    let UserData = {{!FinalStats}};
 </script>
 
 % include("_footer_.html")

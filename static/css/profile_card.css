@@ -25,7 +25,7 @@
 }
 
 .col-md-4 {
-    margin: 0 10px 0 10px;
+    margin: 10px;
     max-width: 300px;
     min-width: 300px;
 }
@@ -53,6 +53,11 @@
 
 .listinfo {
     list-style-type: none;
+    display: flex;
+    justify-content: space-around;
+    padding-inline-start: 0px!important;
+    margin: 0px;
+    padding: 15px 0 0 0;
 }
 
 .text-muted {
@@ -86,10 +91,6 @@
     box-shadow: 0 0 0 3px rgb(21, 252, 0), 0 0 0 2px rgb(21, 252, 0) inset; 
 }
 
-.item.col-md-4.completed {
-    margin-bottom: 50px;
-}
-
 .choreIcon {
     padding: 15px;
 }
@@ -112,11 +113,27 @@
 }
 
 #SubUserCard {
-    text-align: center;
-    display: block;
     margin-left: auto;
     margin-right: auto;
-    color: #fff;
-    width: 20%;
-    padding: 5%;
+}
+
+.test {
+    display: flex;
+    justify-content: center;
+}
+
+.mb-4, .my-4 {
+    margin-top: 1.5rem!important;
+}
+
+
+
+.btn-group {
+    display: flex;
+    justify-content: center;
+}
+
+
+.row {
+    justify-content: center!important;
 }

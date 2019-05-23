@@ -239,6 +239,17 @@ def SpecificUser(SubUserId):
 
 
 
+def GetTheCoins(UserId):
+    """Function that gets the coins earned by a specific user"""
+    Conn = DataBaseConnect()
+    Cur = Conn.cursor()
+    Sql = "SELECT sum(chore_worth) from RESPONSIBILITY where user_id = %s and completed is not null;"
+    Cur.execute(Sql, (UserId,))
+    Coins = Cur.fetchone()
+    return Coins
+
+
+
 def GetHomesUsers(UserId):
     """Function that gets the users of a specific home"""
     Conn = DataBaseConnect()
@@ -303,3 +314,14 @@ def GetTheStats(UserId):
     Cur.execute(Sql2, (HomeId,))
     Statistics = Cur.fetchall()
     return Statistics
+
+
+
+def ChangeAvtar(UserId, NewAvatar):
+    """Function that updates the path of the avatar in the database for a specific user"""
+    Conn = DataBaseConnect()
+    Cur = Conn.cursor()
+    Sql = """UPDATE PERSON set user_avatar = %s where user_id = %s;"""
+    Cur.execute(Sql, (NewAvatar, UserId,))
+    Conn.commit()
+    DataBaseDisconnect()

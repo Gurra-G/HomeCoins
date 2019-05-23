@@ -43,19 +43,22 @@ def LoginCheck():
                                             UserId = UserId,
                                             ChoreInfo=GetChores(UserId),
                                             UserInfo=SpecificUser(UserId),
+                                            Coins=GetTheCoins(UserId),
                                             CompletedChores=GetUsersCompletedChores(UserId))
         else:
-            return template("log_in/index", Avatars=GetAvatars(), error={"emailError": "", "passwordError": "error", "shake": "error"})
+            return template("log_in/index", Avatars=GetAvatars(), 
+                            error={"emailError": "", "passwordError": "error", "shake": "error"})
     else:
-        return template("log_in/index", Avatars=GetAvatars(), error={"emailError": "error", "passwordError": "", "shake": "error"})
+        return template("log_in/index", Avatars=GetAvatars(), 
+                        error={"emailError": "error", "passwordError": "", "shake": "error"})
 
 
 
 @route("/login-page")
 def Login():
     """Displays the login page"""
-    return template("log_in/index", error={"emailError": "", "passwordError": "", "shake": ""}
-                    , Avatars=GetAvatars())
+    return template("log_in/index", error={"emailError": "", "passwordError": "", "shake": ""}, 
+                                    Avatars=GetAvatars())
 
 
 
@@ -63,7 +66,7 @@ def Login():
 def GoHome(UserId):
     """Displays the admin page"""
     HomeInfo = GetHomeInfo(UserId)
-    return template("admin-page", HomeInfo=HomeInfo, 
+    return template("admin-page",   HomeInfo=HomeInfo, 
                                     CompletedChores=GetCompletedChores(HomeInfo[1]), 
                                     Chores=GetChoreInfo(HomeInfo[1]), 
                                     Users=UserInfos(HomeInfo[1]), 
@@ -109,7 +112,8 @@ def UserDetails(UserId, SubUserId):
                                     CompletedChores=CompletedChores, 
                                     UserInfo=UserInfo,
                                     Chores=GetChores(SubUserId), 
-                                    HomeInfo=HomeInfo, 
+                                    HomeInfo=HomeInfo,
+                                    Coins=GetTheCoins(SubUserId), 
                                     UserId=UserId)
 
 
@@ -248,9 +252,10 @@ def CaptureRegistration():
     UserExists = GetTheUser(UserInfo[1])
     Avatar = UserInfo[5]
     if Avatar == 'Välj Avatar...':
-        Avatar = '/static/images/avatars/ninja.png'
+        Avatar = '/static/images/avatars/blueman.png'
     if UserExists is not None:
-        return template("log_in/index", error={"emailError": "errortwo", "shake": "error", "passwordError": ""})
+        return template("log_in/index", Avatars=GetAvatars(), 
+                        error={"emailError": "errortwo", "shake": "error", "passwordError": ""})
     else:
         UserRegistration(UserInfo, Avatar)
         HomeRegistration(UserInfo[1], UserInfo[4])
@@ -268,7 +273,7 @@ def CaptureSubuserRegistration(UserId):
                 getattr(request.forms, "inputAvatar4")]
     Avatar = UserInfo[4]
     if Avatar == 'Välj Avatar...':
-        Avatar = '/static/images/avatars/ninja.png'
+        Avatar = '/static/images/avatars/blueman.png'
     UserExists = GetTheUser(UserInfo[1])
     if UserExists is not None:
         HomeInfo = GetHomeInfo(UserId)
@@ -382,6 +387,7 @@ def CompleteAsSubUser(UserId, ChoreId):
                                 UserId = UserId,
                                 ChoreInfo=GetChores(UserId),
                                 UserInfo=SpecificUser(UserId),
+                                Coins=GetTheCoins(UserId),
                                 CompletedChores=GetUsersCompletedChores(UserId))
 
 
@@ -390,6 +396,7 @@ def CompleteAsSubUser(UserId, ChoreId):
 @route("/Leaderboard/<UserId>")
 def Leaderboard(UserId):
     UserStats = GetTheStats(UserId)
+    FinalStats = json.dumps(UserStats)
     HomeInfo = GetHomeInfo(UserId)
     return template("user-leaderboard", UserId=UserId, 
                                         Users=UserInfos(HomeInfo[1]),
@@ -397,7 +404,49 @@ def Leaderboard(UserId):
                                         Chores=GetChoreInfo(HomeInfo[1]), 
                                         HomeInfo=HomeInfo,
                                         Avatars=GetAvatars(),
-                                        UserStats=UserStats)
+                                        FinalStats=FinalStats)
+
+
+
+
+@route("/go-back/<UserId>")
+def GoBack(UserId):
+    """Displays the user page"""
+    HomeInfo = GetHomeInfo(UserId)
+    return template("user-page", HomeInfo=HomeInfo,
+                                UserId = UserId,
+                                ChoreInfo=GetChores(UserId),
+                                UserInfo=SpecificUser(UserId),
+                                Coins=GetTheCoins(UserId),
+                                CompletedChores=GetUsersCompletedChores(UserId))
+
+
+
+@route("/EditAvatar/<UserId>")
+def EditAvatar(UserId):
+    """Routes the user to the form for updating the avatar"""
+    return template("edit-avatar", HomeInfo=GetHomeInfo(UserId),
+                                    Avatars=GetAvatars(),
+                                    UserId = UserId,
+                                    ChoreInfo=GetChores(UserId),
+                                    UserInfo=SpecificUser(UserId),
+                                    Coins=GetTheCoins(UserId),
+                                    CompletedChores=GetUsersCompletedChores(UserId))
+
+
+
+
+@route("/update-avatar/<UserId>", method="POST")
+def UpdateAvatar(UserId):
+    """Function that updates the users avatar"""
+    NewAvatar = getattr(request.forms, "inputAvatar4")
+    ChangeAvtar(UserId, NewAvatar)
+    return template("user-page", HomeInfo=GetHomeInfo(UserId),
+                                UserId = UserId,
+                                ChoreInfo=GetChores(UserId),
+                                UserInfo=SpecificUser(UserId),
+                                Coins=GetTheCoins(UserId),
+                                CompletedChores=GetUsersCompletedChores(UserId))
 
 
 

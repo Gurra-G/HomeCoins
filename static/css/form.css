@@ -13,3 +13,12 @@ fieldset{
 #edit_user_form{
     text-align: center;
 }
+
+
+#radios {
+    text-align: left!important;
+}
+
+#parenterror {
+    display: none;
+}

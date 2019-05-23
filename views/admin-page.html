@@ -1,5 +1,6 @@
 % include("_header2_.html") 
 <h3 class="headlines">Familjemedlemmar</h3>
+<p id="suicideerror" style="text-align: center" class="{{ error['SuicideError'] }}">Du kan inte radera dig själv!</p>
 <div class="row">
     % for User in Users:
     <div class="item col-md-4">
@@ -9,7 +10,6 @@
         </a>
         <div class="card-body">
           <p class="card-text">{{User[1]}}</p>
-          <p id="suicideerror" class="{{ error['SuicideError'] }}">Du kan inte radera dig själv!</p>
           <div class="d-flex justify-content-between align-items-center">
             <div class="btn-group">
               <a class="icon" href="/edit-user/{{UserId}}/{{User[0]}}">
@@ -20,9 +20,9 @@
               </a>
             </div>
             % if User[3]:
-              <small class="text-muted">Förälder</small>
+              <small class="text-muted"><strong>Förälder</strong></small>
             % else:
-              <small class="text-muted">Barn</small>
+              <small class="text-muted"><strong>Barn</strong></small>
             % end
           </div>
         </div>
@@ -42,7 +42,7 @@
                 </div>
                 <div class="card-body">
                   <p class="card-text">{{Chore[1]}}</p>
-                  <div class="d-flex justify-content-between align-items-center">
+                  <div class="">
                     <div class="btn-group">
                       <a class="icon" href="/CompleteChore/{{UserId}}/{{Chore[0]}}">
                         <img src="/static/images/baseline-check_circle-24px.svg"/>
@@ -56,13 +56,13 @@
                     </div>
                     <ul class="listinfo">
                       <li>
-                        <small class="text-muted">Värde: {{Chore[3]}} <img src="/static/images/Logotype.png" style="height: 10px; width: 10px;" ></small>
+                        <small class="text-muted"><strong>Värde:</strong><br>{{Chore[3]}} <img src="/static/images/Logotype.png" style="height: 15px; width: 15px;"></small>
                       </li>
                       <li>
-                        <small class="text-muted">Ska utföras av: {{Chore[5]}}</small>
+                        <small class="text-muted"><strong>Ansvar:</strong><br>{{Chore[5]}}</small>
                       </li>
                       <li>
-                        <small class="text-muted">Görs senast: {{Chore[6]}}</small>
+                        <small class="text-muted"><strong>Görs senast:</strong><br>{{Chore[6]}}</small>
                       </li>
                   </ul>
                   </div>
@@ -89,9 +89,9 @@
                       <img src="/static/images/baseline-delete-24px.svg"/>
                     </a>
                   </div>
-                  <small class="text-muted">Värde: <br>{{Completed[3]}} <img src="/static/images/Logotype.png" style="height: 10px; width: 10px;" ></small>
-                  <small class="text-muted">Utförd av: <br>{{Completed[5]}}</small>
-                  <small class="text-muted">Avklarad: <br>{{Completed[6]}}</small>
+                  <small class="text-muted"><strong>Värde:</strong><br>{{Completed[3]}} <img src="/static/images/Logotype.png" style="height: 15px; width: 15px;"></small>
+                  <small class="text-muted"><strong>Utfört av:</strong><br>{{Completed[5]}}</small>
+                  <small class="text-muted"><strong>Avklarad:</strong><br>{{Completed[6]}}</small>
                 </div>
               </div>
             </div>
