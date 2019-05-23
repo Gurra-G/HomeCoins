@@ -6,6 +6,7 @@ from bottle import run, route, error, template, static_file, request, get
 import psycopg2
 import passlib
 from passlib.hash import pbkdf2_sha256
+import json
 
 
 bottle.TEMPLATE_PATH.insert(0, 'views')
@@ -369,6 +370,34 @@ def CompleteChore(UserId, ChoreId):
                                 Chores=GetChoreInfo(HomeInfo[1]), 
                                 HomeInfo=HomeInfo,
                                 error={"SuicideError": ""})
+
+
+
+
+@route("/CompleteAsSubUser/<UserId>/<ChoreId>")
+def CompleteAsSubUser(UserId, ChoreId):
+    CompleteTheChore(ChoreId)
+    HomeInfo = GetHomeInfo(UserId)
+    return template("user-page", HomeInfo=HomeInfo,
+                                UserId = UserId,
+                                ChoreInfo=GetChores(UserId),
+                                UserInfo=SpecificUser(UserId),
+                                CompletedChores=GetUsersCompletedChores(UserId))
+
+
+
+#check this nickolaus!
+@route("/Leaderboard/<UserId>")
+def Leaderboard(UserId):
+    UserStats = GetTheStats(UserId)
+    HomeInfo = GetHomeInfo(UserId)
+    return template("user-leaderboard", UserId=UserId, 
+                                        Users=UserInfos(HomeInfo[1]),
+                                        CompletedChores=GetCompletedChores(HomeInfo[1]),
+                                        Chores=GetChoreInfo(HomeInfo[1]), 
+                                        HomeInfo=HomeInfo,
+                                        Avatars=GetAvatars(),
+                                        UserStats=UserStats)
 
 
 
