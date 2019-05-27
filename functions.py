@@ -299,7 +299,7 @@ def GetUsersCompletedChores(UserId):
     return CompletedChores
 
 
-#check this nickolaus!
+
 def GetTheStats(UserId):
     """Function that returns the statistics of which user has the most coins"""
     Conn = DataBaseConnect()

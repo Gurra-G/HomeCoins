@@ -332,6 +332,7 @@ def CreateChore(UserId):
 
 @route("/DeleteChore/<UserId>/<ChoreId>")
 def DeleteChore(UserId, ChoreId):
+    """Function that runs the delete function for a chore and redirects to admin page"""
     DeleteTheChore(ChoreId)
     HomeInfo = GetHomeInfo(UserId)
     return template("admin-page", UserId=UserId, 
@@ -345,6 +346,7 @@ def DeleteChore(UserId, ChoreId):
 
 @route("/DeleteUser/<UserId>/<SubUserId>")
 def DeleteUser(UserId, SubUserId):
+    """Function that checks if the user is trying to delete him selfe, if not deletes and redirects to the admin page"""
     if UserId == SubUserId:
         HomeInfo = GetHomeInfo(UserId)
         return template("admin-page", UserId=UserId, 
@@ -367,6 +369,7 @@ def DeleteUser(UserId, SubUserId):
 
 @route("/CompleteChore/<UserId>/<ChoreId>")
 def CompleteChore(UserId, ChoreId):
+    """Function that runs the completethechore and redirects to the admin page."""
     CompleteTheChore(ChoreId)
     HomeInfo = GetHomeInfo(UserId)
     return template("admin-page", UserId=UserId, 
@@ -381,6 +384,7 @@ def CompleteChore(UserId, ChoreId):
 
 @route("/CompleteAsSubUser/<UserId>/<ChoreId>")
 def CompleteAsSubUser(UserId, ChoreId):
+    """Function that lets the subusers check a function as complete."""
     CompleteTheChore(ChoreId)
     HomeInfo = GetHomeInfo(UserId)
     return template("user-page", HomeInfo=HomeInfo,
@@ -395,6 +399,7 @@ def CompleteAsSubUser(UserId, ChoreId):
 #check this nickolaus!
 @route("/Leaderboard/<UserId>")
 def Leaderboard(UserId):
+    """Function that displayes the leaderboard with statistics from the family"""
     UserStats = GetTheStats(UserId)
     FinalStats = json.dumps(UserStats)
     HomeInfo = GetHomeInfo(UserId)
@@ -411,7 +416,7 @@ def Leaderboard(UserId):
 
 @route("/go-back/<UserId>")
 def GoBack(UserId):
-    """Displays the user page"""
+    """Function that redirects to display the user page"""
     HomeInfo = GetHomeInfo(UserId)
     return template("user-page", HomeInfo=HomeInfo,
                                 UserId = UserId,
@@ -450,7 +455,7 @@ def UpdateAvatar(UserId):
 
 
 
-'''
+
 @error(404)
 def Error404(Error):
     """Returns the error template"""
@@ -462,7 +467,7 @@ def Error404(Error):
 def Error405(Error):
     """Returns the error template"""
     return template("error")
-'''
+
 
 
 @route("/static/css/<filename:path>")
@@ -476,6 +481,7 @@ def StaticCss(filename):
 def StaticJs(filename):
     """Returns the static files, style and js files."""
     return static_file(filename, root="static")
+
 
 
 @route("/static/images/<filename:path>")
