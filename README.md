@@ -25,3 +25,9 @@ To download use and config our product you will need the following setup:
 
 This product has been brought to you by five students studying Information Architecture at Malmö University.
 Edvin Mlivic, Nicklas Hellgren, Victor Håkansson, Gustaf Lagerqvist and Anton Stålhandske.
+
+
+# Git-repository
+
+
+https://github.com/4nt0nn/HomeCoins
